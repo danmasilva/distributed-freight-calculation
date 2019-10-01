@@ -1,15 +1,15 @@
-package server;
+package com.sd.dfc.server;
+
+import com.sd.dfc.data.Database;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import data.Database;
-
 public class ServerThread {
 
-    static final int PORT = 12345;
-    static Database database = null;
+    private static final int PORT = 12345;
+    public static Database database = null;
 
     @SuppressWarnings("resource")
     public static void main(String[] args) {
@@ -24,12 +24,13 @@ public class ServerThread {
 
         while (true) {
             try {
+                assert serverSocket != null;
                 socket = serverSocket.accept();
                 System.out.println("Connection accepted!");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //cria thread para o cliente
+            // cria thread para o cliente
             new EchoThread(socket).start();
 
         }
