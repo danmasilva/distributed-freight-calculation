@@ -1,5 +1,6 @@
 package com.sd.dfc.client;
 
+import com.sd.dfc.config.ReadPropertyFile;
 import com.sd.dfc.data.ArquiveManipulation;
 import com.sd.dfc.data.Database;
 import com.sd.dfc.principal.Menu;
@@ -107,9 +108,13 @@ public class SocketClient {
 
     public static void main(String[] args) {
         SocketClient server = new SocketClient();
+        ReadPropertyFile prop = new ReadPropertyFile();
 
         try {
-            server.startConnection("localhost", 12345);
+            int port = Integer.parseInt(prop.getValue("dfc.port")) ;
+            String ip = prop.getValue("dfc.url");
+            
+            server.startConnection(ip , port);
             Menu menu = new Menu();
             System.out.println(menu.presentMenu());
 
@@ -128,7 +133,7 @@ public class SocketClient {
                         System.out.println(server.sendMessage(text));
 
                         if(!text.equals("readAll"))
-                            arq.write(text);
+                            arq.write( text);
 
                     } else {
                         System.out.println("This is not a valid command.");
