@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 
-public class Database extends ArquiveManipulation {
+public class Database extends ArchiveManipulationImpl {
 
     private static Map<BigInteger, byte[]> map = new HashMap<>();
     private static long count = 0;

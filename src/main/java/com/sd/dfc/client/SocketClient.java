@@ -1,7 +1,7 @@
 package com.sd.dfc.client;
 
 import com.sd.dfc.config.ReadPropertyFile;
-import com.sd.dfc.data.ArquiveManipulation;
+import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.data.Database;
 import com.sd.dfc.principal.Menu;
 
@@ -33,7 +33,7 @@ public class SocketClient {
     private PrintWriter out;
     private BufferedReader in;
     private Database data;
-    private static ArquiveManipulation arq = new ArquiveManipulation();
+    private static ArchiveManipulationImpl arq = new ArchiveManipulationImpl();
 
     private void startConnection(String ip, int port) throws UnknownHostException, IOException {
         clientSocket = new Socket(ip, port);
