@@ -12,7 +12,7 @@ public class Database extends ArchiveManipulationImpl {
     private static Map<BigInteger, byte[]> map = new HashMap<>();
     private static long count = 0;
 
-    public Database() {
+    public  Database() {
     }
 
     public Database(String filename) {

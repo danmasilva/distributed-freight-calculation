@@ -21,13 +21,14 @@ public class DataControllerImpl implements DataController{
     CepDao cepDao = new CepDaoImpl();
     TransportadoraDao transportadoraDao = new TransportadoraDaoImpl();
 
-    ArchiveManipulation cepArchive = new ArchiveManipulationImpl("cep.txt");
+    public final String cep = "cep.txt";
+    ArchiveManipulation cepArchive = new ArchiveManipulationImpl(cep);
     ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl("transportadora.txt");
 
     @Override
     public boolean insert(String[] splittedMessage) throws IOException {
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-        splittedList.remove(0);
+        //splittedList.remove(0);
 
         if(splittedList.get(1).equals("cep")){
             ServerThread.cepDatabase.create(String.join(" ", splittedList).getBytes());
@@ -47,11 +48,12 @@ public class DataControllerImpl implements DataController{
     }
 
     @Override
-    public byte[] update(String[] splittedMessage) {
+    public byte[] update(String[] splittedMessage) throws IOException {
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
         if(splittedMessage[1].equals("cep")){
-            return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(0))),
+            cepArchive.write(String.join(" ", splittedList));
+            return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(2))),
                     String.join(" ", splittedList).getBytes());
         }else if (splittedMessage[1].equals("transportadora")){
             return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(0))),
@@ -145,8 +147,11 @@ public class DataControllerImpl implements DataController{
             case SocketClient.INSERT:
             case SocketClient.CREATE:
             case SocketClient.INSERIR:
-                this.insert(splittedMessage);
-                out.println("Message inserted: " + String.join(" ", splittedMessage));
+                if(this.insert(splittedMessage)){
+                    out.println("Message inserted: " + String.join(" ", splittedMessage));
+                }
+                    out.println("Deu errado");
+
                 break;
             case SocketClient.CHANGE:
             case SocketClient.ALTERAR:

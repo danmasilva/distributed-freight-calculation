@@ -12,7 +12,7 @@ public interface DataController {
     void readAll();
 
     //atualiza o dado no database e escreve o comando no arquivo
-    byte[] update(String[] splittedMessage);
+    byte[] update(String[] splittedMessage) throws IOException;
 
     //remove o dado no database e escreve o comando no arquivo
     void delete();

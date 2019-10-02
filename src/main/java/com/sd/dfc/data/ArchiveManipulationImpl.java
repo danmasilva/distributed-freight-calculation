@@ -12,16 +12,12 @@ public class ArchiveManipulationImpl implements ArchiveManipulation {
 
     public ArchiveManipulationImpl(){}
 
-    String dataSource;
     static Writer writer = null;
+    public String dataSource = "";
     //static private Map<BigInteger, byte[]> map = new HashMap<>();
 
     public ArchiveManipulationImpl(String dataSource) {
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream( dataSource, true)));
-        } catch (Exception e) {
-            System.out.println("Falha ao abrir arquivo");
-        }
+        this.dataSource = dataSource;
     }
 
     @Override
