@@ -1,9 +1,8 @@
 package com.sd.dfc.dao;
 
-import com.sd.dfc.model.Cep;
-
-public class CepDao {
-    public void insertCep(Cep cep){
-
-    }
+public interface CepDao {
+    public void insert();
+    public void update();
+    public void readAll();
+    public void delete();
 }

@@ -17,7 +17,7 @@ public class ArquiveManipulation {
         }
     }
 
-    public void write(FileEnum file, String text) throws IOException {
+    public void write(String text) throws IOException {
         //abre o file
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("data.txt", true)))) {
             writer.append(text).append("\n");
