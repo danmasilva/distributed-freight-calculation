@@ -15,13 +15,11 @@ public class Database extends ArchiveManipulationImpl {
     public Database() {
     }
 
-    public Database(boolean readFile) {
-        if (readFile) {
-            recuperaDados();
-        }
+    public Database(String filename) {
+        recuperaDados(filename);
     }
-    // insere o vetor de bytes e retorna o id mapeado para o mesmo
 
+    // insere o vetor de bytes e retorna o id mapeado para o mesmo
     public long create(byte[] value) {
         map.put(BigInteger.valueOf(count), value);
         return count++;
@@ -43,7 +41,7 @@ public class Database extends ArchiveManipulationImpl {
         return map.remove(id);
     }
 
-    static private void recuperaDados() {
+    static private void recuperaDados(String fileName) {
         Database database = new Database();
         int aux = 0;
 
@@ -51,7 +49,7 @@ public class Database extends ArchiveManipulationImpl {
         StringBuilder lerValor = new StringBuilder();
         String lerId = "";
         try {
-            FileReader dados = new FileReader("data.txt");
+            FileReader dados = new FileReader(fileName);
             BufferedReader lerDados = new BufferedReader(dados);
 
             String linha = lerDados.readLine(); // Le a primeira linha
@@ -111,7 +109,7 @@ public class Database extends ArchiveManipulationImpl {
                 lerId = "";
                 linha = lerDados.readLine();
             }
-            writer.close();
+//            writer.close();
 
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());

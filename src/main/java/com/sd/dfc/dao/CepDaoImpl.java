@@ -1,6 +1,5 @@
-package com.sd.dfc.dao.impl;
+package com.sd.dfc.dao;
 
-import com.sd.dfc.dao.Interfaces.CepDao;
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
 

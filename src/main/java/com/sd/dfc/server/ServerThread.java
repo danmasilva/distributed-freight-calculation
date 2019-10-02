@@ -9,7 +9,8 @@ import java.net.Socket;
 public class ServerThread {
 
     private static final int PORT = 12345;
-    public static Database database = null;
+    public static Database cepDatabase = null;
+    public static Database transportadoraDatabase = null;
 
     @SuppressWarnings("resource")
     public static void main(String[] args) {
@@ -17,7 +18,8 @@ public class ServerThread {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(PORT);
-            database = new Database(true);
+            cepDatabase = new Database("cep.txt");
+            transportadoraDatabase = new Database("transportadora.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

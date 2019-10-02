@@ -1,6 +1,13 @@
 package com.sd.dfc.client;
 
 import com.sd.dfc.config.ReadPropertyFile;
+import com.sd.dfc.controller.DataController;
+import com.sd.dfc.controller.DataControllerImpl;
+import com.sd.dfc.dao.CepDao;
+import com.sd.dfc.dao.CepDaoImpl;
+import com.sd.dfc.dao.TransportadoraDao;
+import com.sd.dfc.dao.TransportadoraDaoImpl;
+import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.data.Database;
 import com.sd.dfc.principal.Menu;
@@ -33,7 +40,8 @@ public class SocketClient {
     private PrintWriter out;
     private BufferedReader in;
     private Database data;
-    private static ArchiveManipulationImpl arq = new ArchiveManipulationImpl();
+
+
 
     private void startConnection(String ip, int port) throws UnknownHostException, IOException {
         clientSocket = new Socket(ip, port);
@@ -53,62 +61,13 @@ public class SocketClient {
         clientSocket.close();
     }
 
-    private static boolean validCommand(String input) {
-        List<String> validCommands = Arrays.asList(
-                // create
-                SocketClient.INSERT, SocketClient.CREATE, SocketClient.INSERIR,
-                // read all
-                SocketClient.READ_ALL, SocketClient.LER_TODOS,
-                // update
-                SocketClient.UPDATE, SocketClient.CHANGE, SocketClient.ALTERAR,
-                // delete
-                SocketClient.DELETE, SocketClient.DELETAR);
 
-        if (validCommands.stream().anyMatch(str -> str.trim().equals(input.split(" ")[0]))
-        ) {
-            String[] splittedCommand = input.split(" ");
-            List<String> splittedList = new ArrayList<>(Arrays.asList(splittedCommand));
-            // command has sufficient parameters?
-            switch (splittedCommand[0]) {
-                case SocketClient.INSERT:
-                case SocketClient.CREATE:
-                case SocketClient.INSERIR:
-                    return (splittedList.size() == 2);
-                case SocketClient.READ_ALL:
-                case SocketClient.LER_TODOS:
-                    return splittedList.size() == 1;
-                case SocketClient.ALTERAR:
-                case SocketClient.CHANGE:
-                case SocketClient.UPDATE:
-                    // o primeiro parâmetro deve poder ser convertido para float
-                    try {
-                        Long.parseLong(splittedCommand[1]);
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    // o segundo parâmetro deve conter algo para substituir o conte�do anterior
-                    return splittedList.size() > 2;
-                case SocketClient.DELETE:
-                case SocketClient.DELETAR:
-                    // o primeiro parâmetro deve poder ser convertido para float
-                    try {
-                        Long.parseLong(splittedCommand[1]);
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    // o segundo parâmetro deve conter nada
-                    return splittedList.size() == 2;
-
-                default:
-                    return false;
-            }
-        }
-        return false;
-    }
 
     public static void main(String[] args) {
         SocketClient server = new SocketClient();
         ReadPropertyFile prop = new ReadPropertyFile();
+
+        DataController controller = new DataControllerImpl();
 
         try {
             int port = Integer.parseInt(prop.getValue("dfc.port")) ;
@@ -122,24 +81,12 @@ public class SocketClient {
             Scanner s = new Scanner(System.in);
             String text;
 
-            long startServiceTime; // utilizado para o timeout
             while (true) {
 
                 text = s.nextLine();
 
                 if (!(text).equals("sair") && !(text).equals("quit") && !(text).equals("exit")) {
-
-                    if (SocketClient.validCommand(text)) {
-                        System.out.println(server.sendMessage(text));
-
-                        if(!text.equals("readAll"))
-                            arq.write( text);
-
-                    } else {
-                        System.out.println("This is not a valid command.");
-                    }
-
-                    //s = new BufferedReader(new InputStreamReader(System.in));
+                    System.out.println(server.sendMessage(text));
                 } else
                     break;
             }

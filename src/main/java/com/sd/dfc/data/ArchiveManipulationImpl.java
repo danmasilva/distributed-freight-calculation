@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class ArchiveManipulationImpl implements ArchiveManipulation {
 
+    public ArchiveManipulationImpl(){}
 
     String dataSource;
     static Writer writer = null;
@@ -23,6 +24,7 @@ public class ArchiveManipulationImpl implements ArchiveManipulation {
         }
     }
 
+    @Override
     public void write(String text) throws IOException {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream( dataSource, true)))) {
             writer.append(text).append("\n");
@@ -34,10 +36,12 @@ public class ArchiveManipulationImpl implements ArchiveManipulation {
         //arq1.write("daniel");
     }
 
+    @Override
     public String getDataSource() {
         return dataSource;
     }
 
+    @Override
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
     }
