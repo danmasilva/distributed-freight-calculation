@@ -1,10 +1,6 @@
 package com.sd.dfc.controller;
 
 import com.sd.dfc.client.SocketClient;
-import com.sd.dfc.dao.CepDao;
-import com.sd.dfc.dao.CepDaoImpl;
-import com.sd.dfc.dao.TransportadoraDao;
-import com.sd.dfc.dao.TransportadoraDaoImpl;
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.server.ServerThread;
@@ -15,14 +11,11 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class DataControllerImpl implements DataController{
-    CepDao cepDao = new CepDaoImpl();
-    TransportadoraDao transportadoraDao = new TransportadoraDaoImpl();
-
     private final String cep = "cep.txt";
     private final String transportadora = "transportadora.txt";
 
-    ArchiveManipulation cepArchive = new ArchiveManipulationImpl(this.cep);
-    ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl(this.transportadora);
+    private ArchiveManipulation cepArchive = new ArchiveManipulationImpl(this.cep);
+    private ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl(this.transportadora);
 
     @Override
     public boolean insert(String[] splittedMessage) throws IOException {
@@ -43,8 +36,6 @@ public class DataControllerImpl implements DataController{
 
     @Override
     public String readAll(String[] splittedMessage) {
-        List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-
         Map<BigInteger, byte[]> map;
         if(splittedMessage[1].equals("cep")){
             map = ServerThread.cepDatabase.readAll();
@@ -55,7 +46,7 @@ public class DataControllerImpl implements DataController{
         }
         StringBuilder result = new StringBuilder();
         for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-            result.append(String.valueOf(entry.getKey())).append(": ").append(new String(entry.getValue())).append(", ");
+            result.append(entry.getKey()).append(": ").append(new String(entry.getValue())).append(", ");
         }
         return result.toString();
     }
@@ -66,12 +57,12 @@ public class DataControllerImpl implements DataController{
 
         if(splittedMessage[1].equals("cep")){
             cepArchive.write(String.join(" ", splittedList));
-            return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(2))),
-                    String.join(" ", splittedList).getBytes());
+            return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+                    String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
         }else if (splittedMessage[1].equals("transportadora")){
             transportadoraArchive.write(String.join(" ", splittedList));
-            return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(2))),
-                    String.join(" ", splittedList).getBytes());
+            return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+                    String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
         }
         return null;
     }
@@ -81,17 +72,18 @@ public class DataControllerImpl implements DataController{
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
         if(splittedMessage[1].equals("cep")){
             cepArchive.write(String.join(" ", splittedList));
-            return ServerThread.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(0))));
+            return ServerThread.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
         }else if (splittedMessage[1].equals("transportadora")){
             transportadoraArchive.write(String.join(" ", splittedList));
-            return  ServerThread.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(0))));
+            return  ServerThread.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
         }
         return null;
     }
 
     @Override
     public String validCommand(String input) {
-        List<String> validCommands = Arrays.asList(
+        List<String> validCommands;
+        validCommands = Arrays.asList(
                 // create
                 SocketClient.INSERT, SocketClient.CREATE, SocketClient.INSERIR,
                 // read all
@@ -162,7 +154,7 @@ public class DataControllerImpl implements DataController{
     public boolean putData(PrintWriter out, String data) throws IOException {
         String[] splittedMessage = data.split(" ");
 
-        byte[] response = null;
+        byte[] response;
         switch (splittedMessage[0]) {
             case SocketClient.INSERT:
             case SocketClient.CREATE:

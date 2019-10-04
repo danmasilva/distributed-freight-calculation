@@ -3,16 +3,15 @@ package com.sd.dfc.data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigInteger;
-import java.util.*;
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Database2 extends ArchiveManipulationImpl {
 
     private Map<BigInteger, byte[]> map = new HashMap<>();
-    private static long count = 0;
-
-    public  Database2() {
-    }
+    private long count = 0;
 
     public Database2(String filename) {
         this.recoverData(filename);
@@ -40,7 +39,7 @@ public class Database2 extends ArchiveManipulationImpl {
         return map.remove(id);
     }
 
-    public void recoverData(String fileName) {
+    private void recoverData(String fileName) {
 
         try{
             FileReader file = new FileReader(fileName);
@@ -67,7 +66,7 @@ public class Database2 extends ArchiveManipulationImpl {
             }
 
         }catch (Exception e){
-            System.err.println(e.getStackTrace());
+            System.err.println(Arrays.toString(e.getStackTrace()));
         }
     }
 }

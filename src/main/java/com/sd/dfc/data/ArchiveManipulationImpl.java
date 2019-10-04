@@ -10,10 +10,9 @@ import java.io.IOException;
 
 public class ArchiveManipulationImpl implements ArchiveManipulation {
 
-    public ArchiveManipulationImpl(){}
+    ArchiveManipulationImpl(){}
 
-    static Writer writer = null;
-    public String dataSource = "";
+    private String dataSource = "";
     //static private Map<BigInteger, byte[]> map = new HashMap<>();
 
     public ArchiveManipulationImpl(String dataSource) {
@@ -25,11 +24,6 @@ public class ArchiveManipulationImpl implements ArchiveManipulation {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream( dataSource, true)))) {
             writer.append(text).append("\n");
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        ArchiveManipulationImpl arq1 = new ArchiveManipulationImpl("teste.txt");
-        //arq1.write("daniel");
     }
 
     @Override

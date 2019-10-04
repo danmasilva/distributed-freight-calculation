@@ -2,7 +2,6 @@ package com.sd.dfc.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 public interface DataController {
     //insere o dado no database e escreve o comando no arquivo

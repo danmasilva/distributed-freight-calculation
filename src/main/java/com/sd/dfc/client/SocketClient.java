@@ -1,14 +1,6 @@
 package com.sd.dfc.client;
 
 import com.sd.dfc.config.ReadPropertyFile;
-import com.sd.dfc.controller.DataController;
-import com.sd.dfc.controller.DataControllerImpl;
-import com.sd.dfc.dao.CepDao;
-import com.sd.dfc.dao.CepDaoImpl;
-import com.sd.dfc.dao.TransportadoraDao;
-import com.sd.dfc.dao.TransportadoraDaoImpl;
-import com.sd.dfc.data.ArchiveManipulation;
-import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.data.Database;
 import com.sd.dfc.principal.Menu;
 
@@ -17,10 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class SocketClient {
@@ -43,7 +31,7 @@ public class SocketClient {
 
 
 
-    private void startConnection(String ip, int port) throws UnknownHostException, IOException {
+    private void startConnection(String ip, int port) throws IOException {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -55,19 +43,9 @@ public class SocketClient {
         return in.readLine();
     }
 
-    public void stopConnection() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
-    }
-
-
-
     public static void main(String[] args) {
         SocketClient server = new SocketClient();
         ReadPropertyFile prop = new ReadPropertyFile();
-
-        DataController controller = new DataControllerImpl();
 
         try {
             int port = Integer.parseInt(prop.getValue("dfc.port")) ;
