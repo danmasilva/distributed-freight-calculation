@@ -8,14 +8,14 @@ import java.io.IOException;
 
 public class Database2 extends ArchiveManipulationImpl {
 
-    private static Map<BigInteger, byte[]> map = new HashMap<>();
+    private Map<BigInteger, byte[]> map = new HashMap<>();
     private static long count = 0;
 
     public  Database2() {
     }
 
     public Database2(String filename) {
-        recoverData(filename);
+        this.recoverData(filename);
     }
 
     // insere o vetor de bytes e retorna o id mapeado para o mesmo
@@ -40,8 +40,7 @@ public class Database2 extends ArchiveManipulationImpl {
         return map.remove(id);
     }
 
-    static private void recoverData(String fileName) {
-        Database2 database2 = new Database2();
+    public void recoverData(String fileName) {
 
         try{
             FileReader file = new FileReader(fileName);
@@ -56,13 +55,13 @@ public class Database2 extends ArchiveManipulationImpl {
 
                 switch (splittedCommand[0]){
                     case "create":
-                        database2.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+                        this.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
                         break;
                     case "update":
-                        database2.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))), String.join(" ", splittedList.subList(3,splittedList.size())).getBytes());
+                        this.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))), String.join(" ", splittedList.subList(3,splittedList.size())).getBytes());
                         break;
                     case "delete":
-                        database2.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+                        this.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
                         break;
                 }
             }

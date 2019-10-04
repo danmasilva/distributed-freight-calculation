@@ -28,8 +28,8 @@ public class SocketClient {
     public static final String INSERT = "insert";
     public static final String CREATE = "create";
     public static final String INSERIR = "inserir";
-    public static final String READ_ALL = "readAll";
-    public static final String LER_TODOS = "lerTodos";
+    public static final String READ_ALL = "readall";
+    public static final String LER_TODOS = "lertodos";
     public static final String UPDATE = "update";
     public static final String CHANGE = "change";
     public static final String ALTERAR = "alterar";

@@ -12,9 +12,7 @@ import com.sd.dfc.server.ServerThread;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class DataControllerImpl implements DataController{
     CepDao cepDao = new CepDaoImpl();
@@ -31,12 +29,12 @@ public class DataControllerImpl implements DataController{
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
         if(splittedList.get(1).equals("cep")){
-            ServerThread.cepDatabase.create(String.join(" ", splittedList).getBytes());
+            ServerThread.cepDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
             cepArchive.write(String.join(" ", splittedList));
 
             return true;
         }else if (splittedList.get(1).equals("transportadora")){
-            ServerThread.transportadoraDatabase.create(String.join(" ", splittedList).getBytes());
+            ServerThread.transportadoraDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
             transportadoraArchive.write(String.join(" ", splittedList));
             return true;
         }
@@ -44,9 +42,22 @@ public class DataControllerImpl implements DataController{
     }
 
     @Override
-    public void readAll(String[] splittedMessage) {
+    public String readAll(String[] splittedMessage) {
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
+        Map<BigInteger, byte[]> map;
+        if(splittedMessage[1].equals("cep")){
+            map = ServerThread.cepDatabase.readAll();
+        }else if(splittedMessage[1].equals("transportadora")){
+            map = ServerThread.transportadoraDatabase.readAll();
+        }else{
+            map = new HashMap<>();
+        }
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+            result.append(String.valueOf(entry.getKey())).append(": ").append(new String(entry.getValue())).append(", ");
+        }
+        return result.toString();
     }
 
     @Override
@@ -59,7 +70,7 @@ public class DataControllerImpl implements DataController{
                     String.join(" ", splittedList).getBytes());
         }else if (splittedMessage[1].equals("transportadora")){
             transportadoraArchive.write(String.join(" ", splittedList));
-            return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(0))),
+            return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(2))),
                     String.join(" ", splittedList).getBytes());
         }
         return null;
@@ -94,18 +105,19 @@ public class DataControllerImpl implements DataController{
         ) {
             String[] splittedCommand = input.split(" ");
             List<String> splittedList = new ArrayList<>(Arrays.asList(splittedCommand));
+
             // command has sufficient parameters?
-            switch (splittedCommand[0]) {
+            switch (splittedList.get(0).toLowerCase()) {
                 case SocketClient.INSERT:
                 case SocketClient.CREATE:
                 case SocketClient.INSERIR:
-                    if ((splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora")) && splittedList.size() == 3){
+                    if (splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
                         //retorna qual database comando atuará
                         return splittedCommand[1];
                     }
                 case SocketClient.READ_ALL:
                 case SocketClient.LER_TODOS:
-                    if((splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora")) && splittedList.size() == 2){
+                    if(splittedList.size() == 2 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
                         //retorna qual database comando atuará
                         return splittedCommand[1];
                     }
@@ -113,7 +125,7 @@ public class DataControllerImpl implements DataController{
                 case SocketClient.CHANGE:
                 case SocketClient.UPDATE:
 
-                    if (!(splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora")))
+                    if (!(splittedList.size() == 4 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
                         return null;
 
                     // o segundo parâmetro deve poder ser convertido para float
@@ -122,13 +134,12 @@ public class DataControllerImpl implements DataController{
                     } catch (Exception e) {
                         return null;
                     }
-                    // o terceiro parâmetro deve conter algo para substituir o conteúdo anterior
-                    if(splittedList.size() == 4){
-                        return splittedCommand[1];
-                    }
+
+                    return splittedCommand[1];
+
                 case SocketClient.DELETE:
                 case SocketClient.DELETAR:
-                    if (!(splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora")))
+                    if (!(splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
                         return null;
                     // o segundo parâmetro deve poder ser convertido para float
                     try {
@@ -136,10 +147,8 @@ public class DataControllerImpl implements DataController{
                     } catch (Exception e) {
                         return null;
                     }
-                    // o terceiro parâmetro deve conter nada
-                    if(splittedList.size() == 3){
-                        return splittedCommand[1];
-                    }
+
+                    return splittedCommand[1];
 
                 default:
                     return null;
@@ -183,28 +192,19 @@ public class DataControllerImpl implements DataController{
                     out.println("Fail on removing item.");
                 }
                 break;
-                /*
             case SocketClient.READ_ALL:
             case SocketClient.LER_TODOS:
-                Map<BigInteger, byte[]> map;
-                if(splittedMessage[1].equals("cep")){
-                    map = ServerThread.cepDatabase.readAll();
-                }else {
-                    map = ServerThread.transportadoraDatabase.readAll();
-                }
-                StringBuilder result = new StringBuilder();
-                for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-                    result.append(String.valueOf(entry.getKey())).append(": ").append(new String(entry.getValue())).append(", ");
-                }
+                String returnedData = this.readAll(splittedMessage);
+
                 // remove the last comma
-                if (result.length() != 0) {
-                    out.println(result.toString().substring(0, result.length() - 2));
-                } else // para nao dar erro de posiçao
+                if (returnedData.length() != 0) {
+                    out.println(returnedData.substring(0, returnedData.length()-2));
+                } else
                 {
                     out.println("Database vazio");
                 }
 
-                break;*/
+                break;
 
             default:
                 break;

@@ -35,7 +35,6 @@ public class ServerThread {
             }
             // cria thread para o cliente
             new EchoThread(socket).start();
-
         }
     }
 

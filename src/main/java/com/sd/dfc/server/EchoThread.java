@@ -33,7 +33,12 @@ public class EchoThread extends Thread {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
-                    dataController.putData(out, inputLine);
+                    //valida se comando é válido
+                    if(dataController.validCommand(inputLine)!=null){
+                        dataController.putData(out, inputLine);
+                    }else{
+                        out.println("Comando mal formatado ou inválido.");
+                    }
                 }
             }
         } catch (IOException e) {

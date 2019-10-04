@@ -9,7 +9,7 @@ public interface DataController {
     boolean insert(String[] splittedList) throws IOException;
 
     //le o dado no database indicado
-    void readAll(String[] splittedMessage);
+    String readAll(String[] splittedMessage);
 
     //atualiza o dado no database e escreve o comando no arquivo
     byte[] update(String[] splittedMessage) throws IOException;
