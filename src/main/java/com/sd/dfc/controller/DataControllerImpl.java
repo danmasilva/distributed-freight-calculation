@@ -15,20 +15,20 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class DataControllerImpl implements DataController{
     CepDao cepDao = new CepDaoImpl();
     TransportadoraDao transportadoraDao = new TransportadoraDaoImpl();
 
-    public final String cep = "cep.txt";
-    ArchiveManipulation cepArchive = new ArchiveManipulationImpl(cep);
-    ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl("transportadora.txt");
+    private final String cep = "cep.txt";
+    private final String transportadora = "transportadora.txt";
+
+    ArchiveManipulation cepArchive = new ArchiveManipulationImpl(this.cep);
+    ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl(this.transportadora);
 
     @Override
     public boolean insert(String[] splittedMessage) throws IOException {
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-        //splittedList.remove(0);
 
         if(splittedList.get(1).equals("cep")){
             ServerThread.cepDatabase.create(String.join(" ", splittedList).getBytes());
@@ -37,13 +37,15 @@ public class DataControllerImpl implements DataController{
             return true;
         }else if (splittedList.get(1).equals("transportadora")){
             ServerThread.transportadoraDatabase.create(String.join(" ", splittedList).getBytes());
+            transportadoraArchive.write(String.join(" ", splittedList));
             return true;
         }
         return false;
     }
 
     @Override
-    public void readAll() {
+    public void readAll(String[] splittedMessage) {
+        List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
     }
 
@@ -56,6 +58,7 @@ public class DataControllerImpl implements DataController{
             return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(2))),
                     String.join(" ", splittedList).getBytes());
         }else if (splittedMessage[1].equals("transportadora")){
+            transportadoraArchive.write(String.join(" ", splittedList));
             return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.remove(0))),
                     String.join(" ", splittedList).getBytes());
         }
@@ -63,8 +66,16 @@ public class DataControllerImpl implements DataController{
     }
 
     @Override
-    public void delete() {
-
+    public byte[] delete(String[] splittedMessage) throws IOException {
+        List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+        if(splittedMessage[1].equals("cep")){
+            cepArchive.write(String.join(" ", splittedList));
+            return ServerThread.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(0))));
+        }else if (splittedMessage[1].equals("transportadora")){
+            transportadoraArchive.write(String.join(" ", splittedList));
+            return  ServerThread.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(0))));
+        }
+        return null;
     }
 
     @Override
@@ -149,34 +160,30 @@ public class DataControllerImpl implements DataController{
             case SocketClient.INSERIR:
                 if(this.insert(splittedMessage)){
                     out.println("Message inserted: " + String.join(" ", splittedMessage));
-                }
+                }else{
                     out.println("Deu errado");
-
+                }
                 break;
             case SocketClient.CHANGE:
             case SocketClient.ALTERAR:
             case SocketClient.UPDATE:
                 response = this.update(splittedMessage);
                 if (response != null) {
-                    out.println("Previous message: " + new String(response) + ", New message: "
-                            + String.join(" ", splittedMessage));
+                    out.println("Previous message: " + new String(response)+ ". Message updated!");
                 } else {
                     out.println("Fail on update message.");
                 }
                 break;
             case SocketClient.DELETAR:
-            /*case SocketClient.DELETE:
-                if(splittedMessage[1].equals("cep")){
-                    response = ServerThread.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(0))));
-                }else if (splittedMessage[1].equals("transportadora")){
-                    response = ServerThread.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(0))));
-                }
+            case SocketClient.DELETE:
+                response = this.delete(splittedMessage);
                 if (response != null) {
                     out.println("Message removed: " + new String(response));
                 } else {
-                    out.println("Fail on removing item with id " + splittedList.get(0));
+                    out.println("Fail on removing item.");
                 }
                 break;
+                /*
             case SocketClient.READ_ALL:
             case SocketClient.LER_TODOS:
                 Map<BigInteger, byte[]> map;

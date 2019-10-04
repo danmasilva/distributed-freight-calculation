@@ -109,25 +109,9 @@ public class Database extends ArchiveManipulationImpl {
                 lerId = "";
                 linha = lerDados.readLine();
             }
-//            writer.close();
 
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
-        }
-    }
-
-    public static void main(String[] args) {
-        Database database = new Database();
-        System.out.println(database.create("daniel marques".getBytes()));
-        System.out.println(database.create("juliana alves".getBytes()));
-        System.out.println(database.create("giovana marques".getBytes()));
-        System.out.println(database.create("luiz antonio".getBytes()));
-
-        System.out.println(database.readAll());
-        // Iterator iterator = database.readAll().entrySet().iterator();
-
-        for (int i = 0; i < Database.map.size(); i++) {
-            System.out.println(new String(database.read(BigInteger.valueOf(i))));
         }
     }
 }

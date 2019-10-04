@@ -38,7 +38,6 @@ public class EchoThread extends Thread {
             }
         } catch (IOException e) {
             System.out.println("O cliente se desconectou do servidor!");
-//            e.printStackTrace();
         }
     }
 }

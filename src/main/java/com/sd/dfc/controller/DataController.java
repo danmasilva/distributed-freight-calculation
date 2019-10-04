@@ -9,13 +9,13 @@ public interface DataController {
     boolean insert(String[] splittedList) throws IOException;
 
     //le o dado no database indicado
-    void readAll();
+    void readAll(String[] splittedMessage);
 
     //atualiza o dado no database e escreve o comando no arquivo
     byte[] update(String[] splittedMessage) throws IOException;
 
     //remove o dado no database e escreve o comando no arquivo
-    void delete();
+    byte[] delete(String[] splittedMessage) throws IOException;
 
     //verifica se é um comando válido. se for, retorna em qual base deve atuar.
     String validCommand(String input);
