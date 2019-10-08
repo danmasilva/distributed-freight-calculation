@@ -1,0 +1,2 @@
+create transportadora t1
+update transportadora 0 mudado

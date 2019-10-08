@@ -10,8 +10,8 @@ Como usar:
     + create transportadora T1
     + create cep 01
  - Atualize nome da transportadora T1 e do cep 01
-    +  update transportadora T1 T2
-    +  update cep 01 1214
+    +  update transportadora 0 T2
+    +  update cep 0 1214
   - Delete a transportadora
     + delete transportadora T1
  
