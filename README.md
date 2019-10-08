@@ -13,7 +13,7 @@ Como usar:
     +  update transportadora 0 T2
     +  update cep 0 1214
   - Delete a transportadora
-    + delete transportadora T1
+    + delete transportadora 0
  
  Obs: ao desligar o codigo a sequencia de comandos que você digitou será salvo num arquivo de forma que 
  ao ligar novamente o programa os estados anteriores sejam recuperados.
