@@ -39,3 +39,4 @@ fabric.properties
 .idea/**/sonarIssues.xml
 .idea/**/markdown-navigator.xml
 .idea/**/markdown-navigator/
+/nbproject/

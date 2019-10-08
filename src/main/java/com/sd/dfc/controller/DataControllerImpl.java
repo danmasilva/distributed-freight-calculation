@@ -162,7 +162,7 @@ public class DataControllerImpl implements DataController{
                 if(this.insert(splittedMessage)){
                     out.println("Message inserted: " + String.join(" ", splittedMessage));
                 }else{
-                    out.println("Deu errado");
+                    out.println("Fail on insert message");
                 }
                 break;
             case SocketClient.CHANGE:
