@@ -20,7 +20,7 @@ public class ArchiveManipulationImpl implements ArchiveManipulation {
     }
 
     @Override
-    public void write(String text) throws IOException {
+    public synchronized void write(String text) throws IOException {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream( dataSource, true)))) {
             writer.append(text).append("\n");
         }

@@ -19,29 +19,38 @@ public class Database extends ArchiveManipulationImpl {
         recuperaDados(filename);
     }
 
-    // insere o vetor de bytes e retorna o id mapeado para o mesmo
-    public long create(byte[] value) {
-        map.put(BigInteger.valueOf(count), value);
-        return count++;
-    }
-
-    private byte[] read(BigInteger id) {
-        return map.get(id);
-    }
-
-    public Map<BigInteger, byte[]> readAll() {
+    public static Map<BigInteger, byte[]> getMap() {
         return map;
     }
 
-    public byte[] update(BigInteger id, byte[] value) {
-        return map.put(id, value);
+    public static void setMap(Map<BigInteger, byte[]> map) {
+        Database.map = map;
     }
 
-    public byte[] delete(BigInteger id) {
-        return map.remove(id);
+    // insere o vetor de bytes e retorna o id mapeado para o mesmo
+    public synchronized long create(byte[] value) {
+        getMap().put(BigInteger.valueOf(getCount()), value);
+        count++;
+        return count;
     }
 
-    static private void recuperaDados(String fileName) {
+    private synchronized byte[] read(BigInteger id) {
+        return getMap().get(id);
+    }
+
+    public  Map<BigInteger, byte[]> readAll() {
+        return getMap();
+    }
+
+    public  synchronized byte[] update(BigInteger id, byte[] value) {
+        return getMap().put(id, value);
+    }
+
+    public  synchronized byte[] delete(BigInteger id) {
+        return getMap().remove(id);
+    }
+
+    static  private void recuperaDados(String fileName) {
         Database database = new Database();
         int aux = 0;
 
@@ -114,4 +123,16 @@ public class Database extends ArchiveManipulationImpl {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
     }
+
+    /**
+     * @return the count
+     */
+    public static long getCount() {
+        return count;
+    }
+    public static void setCount(long value) {
+        Database.count = value;
+    }
+
+
 }
