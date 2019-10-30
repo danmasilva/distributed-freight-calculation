@@ -3,6 +3,8 @@ package com.sd.dfc.controller;
 import com.sd.dfc.client.SocketClient;
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
+import com.sd.dfc.model.Ceps;
+import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.ServerThread;
 
 import java.io.IOException;
@@ -37,17 +39,52 @@ public class DataControllerImpl implements DataController{
     @Override
     public String readAll(String[] splittedMessage) {
         Map<BigInteger, byte[]> map;
+        StringBuilder result = new StringBuilder();
+
         if(splittedMessage[1].equals("cep")){
             map = ServerThread.cepDatabase.readAll();
-        }else if(splittedMessage[1].equals("transportadora")){
+            for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+                String[] values = new String(entry.getValue()).split(" ");
+                Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()),Long.parseLong(values[0]), Long.parseLong(values[1]));
+                result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ").append(ceps.getCepFim()).append(", ");
+            }
+        }
+        else if(splittedMessage[1].equals("transportadora")){
+
             map = ServerThread.transportadoraDatabase.readAll();
+            for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+                String[] transportadoraValues = new String(entry.getValue()).split(" ");
+                String[] cepValues = new String(
+                        ServerThread.cepDatabase.read(
+                                BigInteger.valueOf(
+                                        Long.parseLong(transportadoraValues[1]))))
+                        .split(" ");
+
+                Ceps ceps = new Ceps();
+                ceps.setId(Long.parseLong(transportadoraValues[1]));
+                ceps.setCepInicio(Long.parseLong(cepValues[0]));
+                ceps.setCepFim(Long.parseLong(cepValues[1]));
+
+
+                Transportadora transportadora = new Transportadora(
+                        Long.parseLong(entry.getKey().toString()),
+                        transportadoraValues[0],ceps,
+                        Double.parseDouble(transportadoraValues[2]));
+
+
+                result.append(transportadora.getId())
+                        .append(": ")
+                        .append(transportadora.getNome())
+                        .append(", peso ").append(transportadora.getPeso()).append(" e abrangência de ")
+                        .append(transportadora.getAbrangencia().getCepInicio()).append(" a ")
+                        .append(transportadora.getAbrangencia().getCepFim()).append(", ");
+                //result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ").append(ceps.getCepFim()).append(", ");
+            }
         }else{
             map = new HashMap<>();
         }
-        StringBuilder result = new StringBuilder();
-        for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-            result.append(entry.getKey()).append(": ").append(new String(entry.getValue())).append(", ");
-        }
+
+
         return result.toString();
     }
 
@@ -103,7 +140,7 @@ public class DataControllerImpl implements DataController{
                 case SocketClient.INSERT:
                 case SocketClient.CREATE:
                 case SocketClient.INSERIR:
-                    if (splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
+                    if (splittedList.size() == 5 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
                         //retorna qual database comando atuará
                         return splittedCommand[1];
                     }

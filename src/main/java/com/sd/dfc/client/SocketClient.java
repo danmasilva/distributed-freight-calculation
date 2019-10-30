@@ -1,7 +1,7 @@
 package com.sd.dfc.client;
 
 import com.sd.dfc.config.ReadPropertyFile;
-import com.sd.dfc.data.Database;
+import com.sd.dfc.data.Database2;
 import com.sd.dfc.principal.Menu;
 
 import java.io.BufferedReader;
@@ -27,7 +27,7 @@ public class SocketClient {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
-    private Database data;
+    private Database2 data;
 
 
 
@@ -35,7 +35,7 @@ public class SocketClient {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        data = new Database();
+        data = new Database2();
     }
 
     private String sendMessage(String msg) throws IOException {
@@ -74,4 +74,3 @@ public class SocketClient {
     }
 
 }
-

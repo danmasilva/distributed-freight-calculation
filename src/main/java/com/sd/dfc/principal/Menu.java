@@ -7,9 +7,4 @@ public class Menu {
 				+ "Type 'exit' for quit.";
 	}
 
-	public static void main(String[] args) {
-		Menu menu = new Menu();
-		menu.presentMenu();
-	}
-
 }
