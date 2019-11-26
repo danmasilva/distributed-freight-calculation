@@ -1,7 +1,6 @@
 package com.sd.dfc.client;
 
 import com.sd.dfc.config.ReadPropertyFile;
-import com.sd.dfc.data.Database2;
 import com.sd.dfc.principal.Menu;
 
 import java.io.BufferedReader;
@@ -13,29 +12,14 @@ import java.util.Scanner;
 
 public class SocketClient {
 
-    public static final String INSERT = "insert";
-    public static final String CREATE = "create";
-    public static final String INSERIR = "inserir";
-    public static final String READ_ALL = "readall";
-    public static final String LER_TODOS = "lertodos";
-    public static final String UPDATE = "update";
-    public static final String CHANGE = "change";
-    public static final String ALTERAR = "alterar";
-    public static final String DELETE = "delete";
-    public static final String DELETAR = "deletar";
-
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
-    private Database2 data;
-
-
 
     private void startConnection(String ip, int port) throws IOException {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        data = new Database2();
     }
 
     private String sendMessage(String msg) throws IOException {

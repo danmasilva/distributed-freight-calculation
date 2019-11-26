@@ -1,8 +1,8 @@
 package com.sd.dfc.controller;
 
-import com.sd.dfc.client.SocketClient;
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
+import com.sd.dfc.data.Commands;
 import com.sd.dfc.model.Ceps;
 import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.ServerThread;
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class DataControllerImpl implements DataController{
     private final String cep = "cep.txt";
@@ -120,15 +121,12 @@ public class DataControllerImpl implements DataController{
     @Override
     public String validCommand(String input) {
         List<String> validCommands;
-        validCommands = Arrays.asList(
-                // create
-                SocketClient.INSERT, SocketClient.CREATE, SocketClient.INSERIR,
-                // read all
-                SocketClient.READ_ALL, SocketClient.LER_TODOS,
-                // update
-                SocketClient.UPDATE, SocketClient.CHANGE, SocketClient.ALTERAR,
-                // delete
-                SocketClient.DELETE, SocketClient.DELETAR);
+
+        Object[] validCommandsObject = Stream
+                .of(Commands.INSERT.getAllOps(), Commands.DELETE.getAllOps(), Commands.UPDATE.getAllOps(), Commands.READ_ALL.getAllOps())
+                .flatMap(Stream::of)
+                .toArray();
+        validCommands = Arrays.asList(Arrays.copyOf(validCommandsObject, validCommandsObject.length, String[].class));
 
         if (validCommands.stream().anyMatch(str -> str.trim().equals(input.split(" ")[0]))
         ) {
@@ -136,52 +134,45 @@ public class DataControllerImpl implements DataController{
             List<String> splittedList = new ArrayList<>(Arrays.asList(splittedCommand));
 
             // command has sufficient parameters?
-            switch (splittedList.get(0).toLowerCase()) {
-                case SocketClient.INSERT:
-                case SocketClient.CREATE:
-                case SocketClient.INSERIR:
-                    if (splittedList.size() == 5 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
-                        //retorna qual database comando atuará
-                        return splittedCommand[1];
-                    }
-                case SocketClient.READ_ALL:
-                case SocketClient.LER_TODOS:
-                    if(splittedList.size() == 2 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
-                        //retorna qual database comando atuará
-                        return splittedCommand[1];
-                    }
-                case SocketClient.ALTERAR:
-                case SocketClient.CHANGE:
-                case SocketClient.UPDATE:
-
-                    if (!(splittedList.size() == 4 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
-                        return null;
-
-                    // o segundo parâmetro deve poder ser convertido para float
-                    try {
-                        Long.parseLong(splittedCommand[2]);
-                    } catch (Exception e) {
-                        return null;
-                    }
-
+            if(Arrays.stream(Commands.INSERT.getAllOps()).anyMatch(str -> str.trim().equals(splittedList.get(0).toLowerCase()))){
+                if (splittedList.size() == 4 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
+                    //retorna qual database comando atuará
                     return splittedCommand[1];
-
-                case SocketClient.DELETE:
-                case SocketClient.DELETAR:
-                    if (!(splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
-                        return null;
-                    // o segundo parâmetro deve poder ser convertido para float
-                    try {
-                        Long.parseLong(splittedCommand[2]);
-                    } catch (Exception e) {
-                        return null;
-                    }
-
-                    return splittedCommand[1];
-
-                default:
-                    return null;
+                }
             }
+            else if(Arrays.stream(Commands.READ_ALL.getAllOps()).anyMatch(str -> str.trim().equals(splittedList.get(0).toLowerCase()))){
+                if(splittedList.size() == 2 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
+                    //retorna qual database comando atuará
+                    return splittedCommand[1];
+                }
+            }
+            else if(Arrays.stream(Commands.UPDATE.getAllOps()).anyMatch(str -> str.trim().equals(splittedList.get(0).toLowerCase()))){
+                if (!(splittedList.size() == 4 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
+                    return null;
+
+                // o segundo parâmetro deve poder ser convertido para float
+                try {
+                    Long.parseLong(splittedCommand[2]);
+                } catch (Exception e) {
+                    return null;
+                }
+
+                return splittedCommand[1];
+            }
+            else if(Arrays.stream(Commands.DELETE.getAllOps()).anyMatch(str -> str.trim().equals(splittedList.get(0).toLowerCase()))){
+                if (!(splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
+                    return null;
+                // o segundo parâmetro deve poder ser convertido para float
+                try {
+                    Long.parseLong(splittedCommand[2]);
+                } catch (Exception e) {
+                    return null;
+                }
+
+                return splittedCommand[1];
+            }
+            else return null;
+
         }
         return null;
     }
@@ -192,54 +183,38 @@ public class DataControllerImpl implements DataController{
         String[] splittedMessage = data.split(" ");
 
         byte[] response;
-        switch (splittedMessage[0]) {
-            case SocketClient.INSERT:
-            case SocketClient.CREATE:
-            case SocketClient.INSERIR:
-                if(this.insert(splittedMessage)){
-                    out.println("Message inserted: " + String.join(" ", splittedMessage));
-                }else{
-                    out.println("Fail on insert message");
-                }
-                break;
-            case SocketClient.CHANGE:
-            case SocketClient.ALTERAR:
-            case SocketClient.UPDATE:
-                response = this.update(splittedMessage);
-                if (response != null) {
-                    out.println("Previous message: " + new String(response)+ ". Message updated!");
-                } else {
-                    out.println("Fail on update message.");
-                }
-                break;
-            case SocketClient.DELETAR:
-            case SocketClient.DELETE:
-                response = this.delete(splittedMessage);
-                if (response != null) {
-                    out.println("Message removed: " + new String(response));
-                } else {
-                    out.println("Fail on removing item.");
-                }
-                break;
-            case SocketClient.READ_ALL:
-            case SocketClient.LER_TODOS:
-                String returnedData = this.readAll(splittedMessage);
 
-                // remove the last comma
-                if (returnedData.length() != 0) {
-                    out.println(returnedData.substring(0, returnedData.length()-2));
-                } else
-                {
-                    out.println("Database vazio");
-                }
+        if (Arrays.stream(Commands.INSERT.getAllOps()).anyMatch(str -> str.trim().equals(splittedMessage[0].toLowerCase()))) {
+            if (this.insert(splittedMessage)) {
+                out.println("Message inserted: " + String.join(" ", splittedMessage));
+            } else {
+                out.println("Fail on insert message");
+            }
+        } else if (Arrays.stream(Commands.UPDATE.getAllOps()).anyMatch(str -> str.trim().equals(splittedMessage[0].toLowerCase()))) {
+            response = this.update(splittedMessage);
+            if (response != null) {
+                out.println("Previous message: " + new String(response) + ". Message updated!");
+            } else {
+                out.println("Fail on update message.");
+            }
+        } else if (Arrays.stream(Commands.DELETE.getAllOps()).anyMatch(str -> str.trim().equals(splittedMessage[0].toLowerCase()))) {
+            response = this.delete(splittedMessage);
+            if (response != null) {
+                out.println("Message removed: " + new String(response));
+            } else {
+                out.println("Fail on removing item.");
+            }
+        } else if (Arrays.stream(Commands.READ_ALL.getAllOps()).anyMatch(str -> str.trim().equals(splittedMessage[0].toLowerCase()))) {
+            String returnedData = this.readAll(splittedMessage);
 
-                break;
-
-            default:
-                break;
+            // remove the last comma
+            if (returnedData.length() != 0) {
+                out.println(returnedData.substring(0, returnedData.length() - 2));
+            } else {
+                out.println("Database vazio");
+            }
         }
         return true;
     }
-
 
 }
