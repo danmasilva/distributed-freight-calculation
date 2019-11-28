@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_package = "com.sd.grpc";
+
+service transportadora {
+	rpc create(CreateRequest) returns (APIResponse);
+	rpc update(UpdateRequest) returns (APIResponse);
+	rpc delete(DeleteRequest) returns (APIResponse);
+	rpc readall(Empty) returns (APIResponse);
+}
+
+message Cep{
+	string cepOrigem = 1;
+	string cepDestino = 2;
+}
+
+message Transportadora{
+	string nome = 1;
+	int32 idAbrangencia = 2;
+	Cep abrangencia = 3;
+	double peso = 4;
+}
+
+message CreateRequest{
+	Transportadora transportadora = 1;
+}
+
+message UpdateRequest{
+	int32 id = 1;
+	Transportadora transportadora = 2;
+}
+
+message DeleteRequest{
+	int32 id = 1;
+}
+
+message APIResponse{
+	int32 responseCode = 1;
+	string responsemessage = 2;
+	Transportadora transportadora = 3;
+}
+
+message Empty{}

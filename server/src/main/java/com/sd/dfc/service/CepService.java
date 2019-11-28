@@ -17,7 +17,6 @@ import io.grpc.stub.StreamObserver;
 
 public class CepService extends cepImplBase {
 
-	CepDao cepDao = new CepDaoImpl();
 	DataController dataController = new DataControllerImpl();
 
 	@Override

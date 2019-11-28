@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.sd.dfc.data.Database2;
 import com.sd.dfc.service.CepService;
+import com.sd.dfc.service.TransportadoraService;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -18,6 +19,7 @@ public class GRPCServer {
 		Server server = ServerBuilder
 				.forPort(PORT)
 				.addService( new CepService())
+				.addService(new TransportadoraService())
 				.build();
 		
 		cepDatabase = new Database2("cep.txt");
