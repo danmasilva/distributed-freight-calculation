@@ -45,31 +45,33 @@ public class Database2 extends ArchiveManipulationImpl {
 
     private void recoverData(String fileName) {
 
-        try{
+        try {
             FileReader file = new FileReader(fileName);
             BufferedReader readFile = new BufferedReader(file);
             String line;
             String[] splittedCommand;
-            while((line = readFile.readLine())!=null){
+            while ((line = readFile.readLine()) != null) {
                 splittedCommand = line.split(" ");
 
-                //lista com o comando subtraido do método e do nome do arquivo
+                // lista com o comando subtraido do método e do nome do arquivo
                 List<String> splittedList = Arrays.asList(splittedCommand);
 
-                switch (splittedCommand[0]){
-                    case "create":
-                        this.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
-                        break;
-                    case "update":
-                        this.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))), String.join(" ", splittedList.subList(3,splittedList.size())).getBytes());
-                        break;
-                    case "delete":
-                        this.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
-                        break;
+                switch (splittedCommand[0]) {
+                case "create":
+                    this.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+                    break;
+                case "update":
+                    this.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+                            String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
+                    break;
+                case "delete":
+                    this.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+                    break;
                 }
             }
+            readFile.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(Arrays.toString(e.getStackTrace()));
         }
     }

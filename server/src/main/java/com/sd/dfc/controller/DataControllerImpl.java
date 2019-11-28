@@ -1,17 +1,21 @@
 package com.sd.dfc.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.data.Commands;
 import com.sd.dfc.model.Ceps;
 import com.sd.dfc.model.Transportadora;
-import com.sd.dfc.server.ServerThread;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.stream.Stream;
+import com.sd.dfc.server.GRPCServer;
 
 public class DataControllerImpl implements DataController{
     private final String cep = "cep.txt";
@@ -25,12 +29,12 @@ public class DataControllerImpl implements DataController{
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
         if(splittedList.get(1).equals("cep")){
-            ServerThread.cepDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+        	GRPCServer.cepDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
             cepArchive.write(String.join(" ", splittedList));
 
             return true;
         }else if (splittedList.get(1).equals("transportadora")){
-            ServerThread.transportadoraDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+        	GRPCServer.transportadoraDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
             transportadoraArchive.write(String.join(" ", splittedList));
             return true;
         }
@@ -43,7 +47,7 @@ public class DataControllerImpl implements DataController{
         StringBuilder result = new StringBuilder();
 
         if(splittedMessage[1].equals("cep")){
-            map = ServerThread.cepDatabase.readAll();
+            map = GRPCServer.cepDatabase.readAll();
             for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
                 String[] values = new String(entry.getValue()).split(" ");
                 Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()),Long.parseLong(values[0]), Long.parseLong(values[1]));
@@ -52,11 +56,11 @@ public class DataControllerImpl implements DataController{
         }
         else if(splittedMessage[1].equals("transportadora")){
 
-            map = ServerThread.transportadoraDatabase.readAll();
+            map = GRPCServer.transportadoraDatabase.readAll();
             for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
                 String[] transportadoraValues = new String(entry.getValue()).split(" ");
                 String[] cepValues = new String(
-                        ServerThread.cepDatabase.read(
+                        GRPCServer.cepDatabase.read(
                                 BigInteger.valueOf(
                                         Long.parseLong(transportadoraValues[1]))))
                         .split(" ");
@@ -95,11 +99,11 @@ public class DataControllerImpl implements DataController{
 
         if(splittedMessage[1].equals("cep")){
             cepArchive.write(String.join(" ", splittedList));
-            return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+            return GRPCServer.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
                     String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
         }else if (splittedMessage[1].equals("transportadora")){
             transportadoraArchive.write(String.join(" ", splittedList));
-            return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+            return GRPCServer.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
                     String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
         }
         return null;
@@ -110,10 +114,10 @@ public class DataControllerImpl implements DataController{
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
         if(splittedMessage[1].equals("cep")){
             cepArchive.write(String.join(" ", splittedList));
-            return ServerThread.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+            return GRPCServer.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
         }else if (splittedMessage[1].equals("transportadora")){
             transportadoraArchive.write(String.join(" ", splittedList));
-            return  ServerThread.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+            return  GRPCServer.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
         }
         return null;
     }
