@@ -6,12 +6,18 @@ service cep {
 	rpc create(CreateRequest) returns (APIResponse);
 	rpc update(UpdateRequest) returns (APIResponse);
 	rpc delete(DeleteRequest) returns (APIResponse);
-	rpc readall(Empty) returns (APIResponse);
+	rpc readall(Empty) returns (stream CepResponse);
 }
 
 message Cep{
-	string cepOrigem = 1;
-	string cepDestino = 2;
+	int64 cepInicio = 1;
+	int64 cepFim = 2;
+}
+
+message CepResponse{
+	int64 id = 1;
+	int64 cepInicio = 2;
+	int64 cepFim = 3;
 }
 
 message CreateRequest{
@@ -30,7 +36,7 @@ message DeleteRequest{
 message APIResponse{
 	int32 responseCode = 1;
 	string responsemessage = 2;
-	Cep cep = 3;
+	CepResponse cep = 3;
 }
 
 message Empty{}

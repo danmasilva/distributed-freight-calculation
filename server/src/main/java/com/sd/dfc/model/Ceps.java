@@ -1,6 +1,6 @@
 package com.sd.dfc.model;
 
-//classe armazerá o conjunto de ceps que uma transportadora abrange, de cepinicio até cepfim.
+//classe armazenará o conjunto de ceps que uma transportadora abrange, de cepinicio até cepfim.
 public class Ceps {
 
     public Ceps(){}
@@ -9,6 +9,12 @@ public class Ceps {
         this.id = id;
         this.cepInicio = cepInicio;
         this.cepFim = cepFim;
+    }
+    
+    public Ceps(Ceps ceps) {
+    	this.id = ceps.id;
+        this.cepInicio = ceps.cepInicio;
+        this.cepFim = ceps.cepFim;
     }
 
     private long id;

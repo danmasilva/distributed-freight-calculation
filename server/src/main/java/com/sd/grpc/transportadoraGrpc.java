@@ -124,29 +124,29 @@ public final class transportadoraGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.sd.grpc.TransportadoraOuterClass.Empty,
-      com.sd.grpc.TransportadoraOuterClass.APIResponse> getReadallMethod;
+      com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse> getReadallMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "readall",
       requestType = com.sd.grpc.TransportadoraOuterClass.Empty.class,
-      responseType = com.sd.grpc.TransportadoraOuterClass.APIResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+      responseType = com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<com.sd.grpc.TransportadoraOuterClass.Empty,
-      com.sd.grpc.TransportadoraOuterClass.APIResponse> getReadallMethod() {
-    io.grpc.MethodDescriptor<com.sd.grpc.TransportadoraOuterClass.Empty, com.sd.grpc.TransportadoraOuterClass.APIResponse> getReadallMethod;
+      com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse> getReadallMethod() {
+    io.grpc.MethodDescriptor<com.sd.grpc.TransportadoraOuterClass.Empty, com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse> getReadallMethod;
     if ((getReadallMethod = transportadoraGrpc.getReadallMethod) == null) {
       synchronized (transportadoraGrpc.class) {
         if ((getReadallMethod = transportadoraGrpc.getReadallMethod) == null) {
           transportadoraGrpc.getReadallMethod = getReadallMethod = 
-              io.grpc.MethodDescriptor.<com.sd.grpc.TransportadoraOuterClass.Empty, com.sd.grpc.TransportadoraOuterClass.APIResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              io.grpc.MethodDescriptor.<com.sd.grpc.TransportadoraOuterClass.Empty, com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(
                   "transportadora", "readall"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.sd.grpc.TransportadoraOuterClass.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sd.grpc.TransportadoraOuterClass.APIResponse.getDefaultInstance()))
+                  com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new transportadoraMethodDescriptorSupplier("readall"))
                   .build();
           }
@@ -206,7 +206,7 @@ public final class transportadoraGrpc {
     /**
      */
     public void readall(com.sd.grpc.TransportadoraOuterClass.Empty request,
-        io.grpc.stub.StreamObserver<com.sd.grpc.TransportadoraOuterClass.APIResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getReadallMethod(), responseObserver);
     }
 
@@ -235,10 +235,10 @@ public final class transportadoraGrpc {
                   this, METHODID_DELETE)))
           .addMethod(
             getReadallMethod(),
-            asyncUnaryCall(
+            asyncServerStreamingCall(
               new MethodHandlers<
                 com.sd.grpc.TransportadoraOuterClass.Empty,
-                com.sd.grpc.TransportadoraOuterClass.APIResponse>(
+                com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse>(
                   this, METHODID_READALL)))
           .build();
     }
@@ -289,8 +289,8 @@ public final class transportadoraGrpc {
     /**
      */
     public void readall(com.sd.grpc.TransportadoraOuterClass.Empty request,
-        io.grpc.stub.StreamObserver<com.sd.grpc.TransportadoraOuterClass.APIResponse> responseObserver) {
-      asyncUnaryCall(
+        io.grpc.stub.StreamObserver<com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse> responseObserver) {
+      asyncServerStreamingCall(
           getChannel().newCall(getReadallMethod(), getCallOptions()), request, responseObserver);
     }
   }
@@ -336,8 +336,9 @@ public final class transportadoraGrpc {
 
     /**
      */
-    public com.sd.grpc.TransportadoraOuterClass.APIResponse readall(com.sd.grpc.TransportadoraOuterClass.Empty request) {
-      return blockingUnaryCall(
+    public java.util.Iterator<com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse> readall(
+        com.sd.grpc.TransportadoraOuterClass.Empty request) {
+      return blockingServerStreamingCall(
           getChannel(), getReadallMethod(), getCallOptions(), request);
     }
   }
@@ -383,14 +384,6 @@ public final class transportadoraGrpc {
       return futureUnaryCall(
           getChannel().newCall(getDeleteMethod(), getCallOptions()), request);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<com.sd.grpc.TransportadoraOuterClass.APIResponse> readall(
-        com.sd.grpc.TransportadoraOuterClass.Empty request) {
-      return futureUnaryCall(
-          getChannel().newCall(getReadallMethod(), getCallOptions()), request);
-    }
   }
 
   private static final int METHODID_CREATE = 0;
@@ -429,7 +422,7 @@ public final class transportadoraGrpc {
           break;
         case METHODID_READALL:
           serviceImpl.readall((com.sd.grpc.TransportadoraOuterClass.Empty) request,
-              (io.grpc.stub.StreamObserver<com.sd.grpc.TransportadoraOuterClass.APIResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();

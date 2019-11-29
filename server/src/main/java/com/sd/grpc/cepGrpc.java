@@ -124,29 +124,29 @@ public final class cepGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.sd.grpc.CepOuterClass.Empty,
-      com.sd.grpc.CepOuterClass.APIResponse> getReadallMethod;
+      com.sd.grpc.CepOuterClass.CepResponse> getReadallMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "readall",
       requestType = com.sd.grpc.CepOuterClass.Empty.class,
-      responseType = com.sd.grpc.CepOuterClass.APIResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+      responseType = com.sd.grpc.CepOuterClass.CepResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<com.sd.grpc.CepOuterClass.Empty,
-      com.sd.grpc.CepOuterClass.APIResponse> getReadallMethod() {
-    io.grpc.MethodDescriptor<com.sd.grpc.CepOuterClass.Empty, com.sd.grpc.CepOuterClass.APIResponse> getReadallMethod;
+      com.sd.grpc.CepOuterClass.CepResponse> getReadallMethod() {
+    io.grpc.MethodDescriptor<com.sd.grpc.CepOuterClass.Empty, com.sd.grpc.CepOuterClass.CepResponse> getReadallMethod;
     if ((getReadallMethod = cepGrpc.getReadallMethod) == null) {
       synchronized (cepGrpc.class) {
         if ((getReadallMethod = cepGrpc.getReadallMethod) == null) {
           cepGrpc.getReadallMethod = getReadallMethod = 
-              io.grpc.MethodDescriptor.<com.sd.grpc.CepOuterClass.Empty, com.sd.grpc.CepOuterClass.APIResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              io.grpc.MethodDescriptor.<com.sd.grpc.CepOuterClass.Empty, com.sd.grpc.CepOuterClass.CepResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(
                   "cep", "readall"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.sd.grpc.CepOuterClass.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sd.grpc.CepOuterClass.APIResponse.getDefaultInstance()))
+                  com.sd.grpc.CepOuterClass.CepResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new cepMethodDescriptorSupplier("readall"))
                   .build();
           }
@@ -206,7 +206,7 @@ public final class cepGrpc {
     /**
      */
     public void readall(com.sd.grpc.CepOuterClass.Empty request,
-        io.grpc.stub.StreamObserver<com.sd.grpc.CepOuterClass.APIResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.sd.grpc.CepOuterClass.CepResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getReadallMethod(), responseObserver);
     }
 
@@ -235,10 +235,10 @@ public final class cepGrpc {
                   this, METHODID_DELETE)))
           .addMethod(
             getReadallMethod(),
-            asyncUnaryCall(
+            asyncServerStreamingCall(
               new MethodHandlers<
                 com.sd.grpc.CepOuterClass.Empty,
-                com.sd.grpc.CepOuterClass.APIResponse>(
+                com.sd.grpc.CepOuterClass.CepResponse>(
                   this, METHODID_READALL)))
           .build();
     }
@@ -289,8 +289,8 @@ public final class cepGrpc {
     /**
      */
     public void readall(com.sd.grpc.CepOuterClass.Empty request,
-        io.grpc.stub.StreamObserver<com.sd.grpc.CepOuterClass.APIResponse> responseObserver) {
-      asyncUnaryCall(
+        io.grpc.stub.StreamObserver<com.sd.grpc.CepOuterClass.CepResponse> responseObserver) {
+      asyncServerStreamingCall(
           getChannel().newCall(getReadallMethod(), getCallOptions()), request, responseObserver);
     }
   }
@@ -336,8 +336,9 @@ public final class cepGrpc {
 
     /**
      */
-    public com.sd.grpc.CepOuterClass.APIResponse readall(com.sd.grpc.CepOuterClass.Empty request) {
-      return blockingUnaryCall(
+    public java.util.Iterator<com.sd.grpc.CepOuterClass.CepResponse> readall(
+        com.sd.grpc.CepOuterClass.Empty request) {
+      return blockingServerStreamingCall(
           getChannel(), getReadallMethod(), getCallOptions(), request);
     }
   }
@@ -383,14 +384,6 @@ public final class cepGrpc {
       return futureUnaryCall(
           getChannel().newCall(getDeleteMethod(), getCallOptions()), request);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<com.sd.grpc.CepOuterClass.APIResponse> readall(
-        com.sd.grpc.CepOuterClass.Empty request) {
-      return futureUnaryCall(
-          getChannel().newCall(getReadallMethod(), getCallOptions()), request);
-    }
   }
 
   private static final int METHODID_CREATE = 0;
@@ -429,7 +422,7 @@ public final class cepGrpc {
           break;
         case METHODID_READALL:
           serviceImpl.readall((com.sd.grpc.CepOuterClass.Empty) request,
-              (io.grpc.stub.StreamObserver<com.sd.grpc.CepOuterClass.APIResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.sd.grpc.CepOuterClass.CepResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();

@@ -17,7 +17,8 @@ import com.sd.dfc.model.Ceps;
 import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.GRPCServer;
 
-public class DataControllerImpl implements DataController{
+//controlador genérico que identifica na chamada do método o database que deverá modificar.
+public class DataControllerImpl implements DataController, DataReadStringController{
     private final String cep = "cep.txt";
     private final String transportadora = "transportadora.txt";
 
@@ -25,20 +26,21 @@ public class DataControllerImpl implements DataController{
     private ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl(this.transportadora);
 
     @Override
-    public boolean insert(String[] splittedMessage) throws IOException {
+    public long insert(String[] splittedMessage) throws IOException {
         List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+        long createdId;
 
         if(splittedList.get(1).equals("cep")){
-        	GRPCServer.cepDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+        	createdId = GRPCServer.cepDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
             cepArchive.write(String.join(" ", splittedList));
 
-            return true;
+            return createdId;
         }else if (splittedList.get(1).equals("transportadora")){
-        	GRPCServer.transportadoraDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+        	createdId = GRPCServer.transportadoraDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
             transportadoraArchive.write(String.join(" ", splittedList));
-            return true;
+            return createdId;
         }
-        return false;
+        return -1;
     }
 
     @Override
@@ -121,7 +123,7 @@ public class DataControllerImpl implements DataController{
         }
         return null;
     }
-
+    
     @Override
     public String validCommand(String input) {
         List<String> validCommands;
@@ -189,7 +191,7 @@ public class DataControllerImpl implements DataController{
         byte[] response;
 
         if (Arrays.stream(Commands.INSERT.getAllOps()).anyMatch(str -> str.trim().equals(splittedMessage[0].toLowerCase()))) {
-            if (this.insert(splittedMessage)) {
+            if (this.insert(splittedMessage)!=-1) {
                 out.println("Message inserted: " + String.join(" ", splittedMessage));
             } else {
                 out.println("Fail on insert message");
@@ -220,5 +222,4 @@ public class DataControllerImpl implements DataController{
         }
         return true;
     }
-
 }

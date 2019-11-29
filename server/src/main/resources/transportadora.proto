@@ -6,17 +6,23 @@ service transportadora {
 	rpc create(CreateRequest) returns (APIResponse);
 	rpc update(UpdateRequest) returns (APIResponse);
 	rpc delete(DeleteRequest) returns (APIResponse);
-	rpc readall(Empty) returns (APIResponse);
+	rpc readall(Empty) returns (stream TransportadoraResponse);
 }
 
 message Cep{
-	string cepOrigem = 1;
-	string cepDestino = 2;
+	int64 cepInicio= 1;
+	int64 cepFim = 2;
 }
 
 message Transportadora{
 	string nome = 1;
 	int32 idAbrangencia = 2;
+	double peso = 3;
+}
+
+message TransportadoraResponse{
+	int32 id = 1;
+	string nome = 2;
 	Cep abrangencia = 3;
 	double peso = 4;
 }
@@ -37,7 +43,7 @@ message DeleteRequest{
 message APIResponse{
 	int32 responseCode = 1;
 	string responsemessage = 2;
-	Transportadora transportadora = 3;
+	TransportadoraResponse transportadora = 3;
 }
 
 message Empty{}
