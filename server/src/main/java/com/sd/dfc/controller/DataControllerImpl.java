@@ -85,7 +85,6 @@ public class DataControllerImpl implements DataController, DataReadStringControl
                         .append(", peso ").append(transportadora.getPeso()).append(" e abrangência de ")
                         .append(transportadora.getAbrangencia().getCepInicio()).append(" a ")
                         .append(transportadora.getAbrangencia().getCepFim()).append(", ");
-                //result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ").append(ceps.getCepFim()).append(", ");
             }
         }else{
             map = new HashMap<>();

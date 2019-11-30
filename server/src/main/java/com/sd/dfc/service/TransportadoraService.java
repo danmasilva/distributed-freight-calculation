@@ -8,7 +8,7 @@ import com.sd.dfc.controller.DataControllerTransportadoraImpl;
 import com.sd.dfc.model.Ceps;
 import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.GRPCServer;
-import com.sd.grpc.TransportadoraOuterClass.APIResponse;
+import com.sd.grpc.TransportadoraOuterClass.APITransportadoraResponse;
 import com.sd.grpc.TransportadoraOuterClass.Cep;
 import com.sd.grpc.TransportadoraOuterClass.CreateRequest;
 import com.sd.grpc.TransportadoraOuterClass.DeleteRequest;
@@ -24,7 +24,7 @@ public class TransportadoraService extends transportadoraImplBase {
 	DataControllerTransportadoraImpl dataControllerTransportadora = new DataControllerTransportadoraImpl();
 
 	@Override
-	public void create(CreateRequest request, StreamObserver<APIResponse> responseObserver) {
+	public void create(CreateRequest request, StreamObserver<APITransportadoraResponse> responseObserver) {
 
 		System.out.println("create transportadora request");
 
@@ -58,13 +58,13 @@ public class TransportadoraService extends transportadoraImplBase {
 				e.printStackTrace();
 			}
 
-			APIResponse.Builder response = APIResponse.newBuilder();
+			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 			response.setResponseCode(201).setResponsemessage("Transportadora cadastrada.")
 					.setTransportadora(transportadoraBuilder);
 			responseObserver.onNext(response.build());
 			responseObserver.onCompleted();
 		} else {
-			APIResponse.Builder response = APIResponse.newBuilder();
+			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 			response.setResponseCode(201)
 					.setResponsemessage("Falha ao cadastrar transportadora. Abrangência informada existe?");
 			responseObserver.onNext(response.build());
@@ -73,7 +73,7 @@ public class TransportadoraService extends transportadoraImplBase {
 	}
 
 	@Override
-	public void update(UpdateRequest request, StreamObserver<APIResponse> responseObserver) {
+	public void update(UpdateRequest request, StreamObserver<APITransportadoraResponse> responseObserver) {
 		System.out.println("update transportadora request");
 
 		int id = request.getId();
@@ -106,13 +106,13 @@ public class TransportadoraService extends transportadoraImplBase {
 				e.printStackTrace();
 			}
 
-			APIResponse.Builder response = APIResponse.newBuilder();
+			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 			response.setResponseCode(201).setResponsemessage("Transportadora atualizada.")
 					.setTransportadora(transportadoraBuilder);
 			responseObserver.onNext(response.build());
 			responseObserver.onCompleted();
 		} else {
-			APIResponse.Builder response = APIResponse.newBuilder();
+			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 			response.setResponseCode(201)
 					.setResponsemessage("Falha ao atualizar transportadora. Abrangência informada existe?");
 			responseObserver.onNext(response.build());
@@ -121,7 +121,7 @@ public class TransportadoraService extends transportadoraImplBase {
 	}
 
 	@Override
-	public void delete(DeleteRequest request, StreamObserver<APIResponse> responseObserver) {
+	public void delete(DeleteRequest request, StreamObserver<APITransportadoraResponse> responseObserver) {
 		System.out.println("delete transportadora request");
 
 		int id = request.getId();
@@ -134,7 +134,7 @@ public class TransportadoraService extends transportadoraImplBase {
 			e.printStackTrace();
 		}
 
-		APIResponse.Builder response = APIResponse.newBuilder();
+		APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 		response.setResponseCode(201).setResponsemessage("Transportadora deletada.");
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();

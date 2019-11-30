@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sd.dfc.controller.DataControllerCepsImpl;
 import com.sd.dfc.model.Ceps;
-import com.sd.grpc.CepOuterClass.APIResponse;
+import com.sd.grpc.CepOuterClass.APICepResponse;
 import com.sd.grpc.CepOuterClass.Cep;
 import com.sd.grpc.CepOuterClass.CepResponse;
 import com.sd.grpc.CepOuterClass.CreateRequest;
@@ -22,7 +22,7 @@ public class CepService extends cepImplBase{
 	DataControllerCepsImpl dataController = new DataControllerCepsImpl();
 
 	@Override
-	public void create(CreateRequest request, StreamObserver<APIResponse> responseObserver) {
+	public void create(CreateRequest request, StreamObserver<APICepResponse> responseObserver) {
 		System.out.println("create cep request");
 		long cepInicio = (long) request.getCep().getCepInicio();
 		long cepFim = (long) request.getCep().getCepFim();
@@ -43,14 +43,14 @@ public class CepService extends cepImplBase{
 			e.printStackTrace();
 		}
 		
-		APIResponse.Builder response = APIResponse.newBuilder();
+		APICepResponse.Builder response = APICepResponse.newBuilder();
 		response.setResponseCode(201).setResponsemessage("Created").setCep(builder);
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
 	}
 
 	@Override
-	public void update(UpdateRequest request, StreamObserver<APIResponse> responseObserver) {
+	public void update(UpdateRequest request, StreamObserver<APICepResponse> responseObserver) {
 		System.out.println("update cep request");
 
 		int id = request.getId();
@@ -73,14 +73,14 @@ public class CepService extends cepImplBase{
 		builder.setCepInicio(cepInicio);
 		builder.setCepFim(cepFim);
 
-		APIResponse.Builder response = APIResponse.newBuilder();
+		APICepResponse.Builder response = APICepResponse.newBuilder();
 		response.setResponseCode(200).setResponsemessage("Updated").setCep(builder);
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
 	}
 
 	@Override
-	public void delete(DeleteRequest request, StreamObserver<APIResponse> responseObserver) {
+	public void delete(DeleteRequest request, StreamObserver<APICepResponse> responseObserver) {
 		System.out.println("delete cep request");
 		int id = request.getId();
 
@@ -95,7 +95,7 @@ public class CepService extends cepImplBase{
 			e.printStackTrace();
 		}
 
-		APIResponse.Builder response = APIResponse.newBuilder();
+		APICepResponse.Builder response = APICepResponse.newBuilder();
 		response.setResponseCode(201).setResponsemessage("Removed");
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
