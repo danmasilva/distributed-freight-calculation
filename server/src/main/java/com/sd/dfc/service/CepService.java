@@ -1,14 +1,10 @@
 package com.sd.dfc.service;
 
-import java.io.IOException;
 import java.util.List;
-
-import org.apache.http.ParseException;
 
 import com.sd.dfc.controller.DataControllerCepsImpl;
 import com.sd.dfc.model.Ceps;
 import com.sd.grpc.CepOuterClass.APICepResponse;
-import com.sd.grpc.CepOuterClass.Cep;
 import com.sd.grpc.CepOuterClass.CepResponse;
 import com.sd.grpc.CepOuterClass.CreateRequest;
 import com.sd.grpc.CepOuterClass.DeleteRequest;
@@ -18,9 +14,8 @@ import com.sd.grpc.cepGrpc.cepImplBase;
 
 import io.grpc.stub.StreamObserver;
 
-public class CepService extends cepImplBase{
-	
-	
+public class CepService extends cepImplBase {
+
 	DataControllerCepsImpl dataController = new DataControllerCepsImpl();
 
 	@Override
@@ -28,18 +23,20 @@ public class CepService extends cepImplBase{
 		System.out.println("create cep request");
 		long cepInicio = (long) request.getCep().getCepInicio();
 		long cepFim = (long) request.getCep().getCepFim();
-		if (cepInicio == 0 || cepFim ==0) {
+
+		// tratativa de cep inválido/nao informado
+		if (cepInicio == 0 || cepFim == 0) {
 			APICepResponse.Builder response = APICepResponse.newBuilder();
-			response.setResponseCode(201).setResponsemessage("faio").setCep(builder);
+			response.setResponseCode(400).setResponsemessage("Bad Request");
 			responseObserver.onNext(response.build());
 			responseObserver.onCompleted();
 			return;
 		}
-			
+
 		StringBuilder query = new StringBuilder();
 
 		query.append("create cep ").append(cepInicio).append(" ").append(cepFim);
-		
+
 		CepResponse.Builder builder = CepResponse.newBuilder();
 
 		try {
@@ -47,11 +44,14 @@ public class CepService extends cepImplBase{
 			builder.setId((int) dataController.insert(query.toString().split(" ")));
 			builder.setCepInicio(cepInicio);
 			builder.setCepFim(cepFim);
-		} catch (IOException e) {
-			System.out.println("Falha ao inserir no banco");
-			e.printStackTrace();
+		} catch (Exception e) {
+			APICepResponse.Builder response = APICepResponse.newBuilder();
+			response.setResponseCode(500).setResponsemessage("Internal Server Error");
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
+			return;
 		}
-		
+
 		APICepResponse.Builder response = APICepResponse.newBuilder();
 		response.setResponseCode(201).setResponsemessage("Created").setCep(builder);
 		responseObserver.onNext(response.build());
@@ -66,17 +66,29 @@ public class CepService extends cepImplBase{
 		long cepInicio = request.getCep().getCepInicio();
 		long cepFim = request.getCep().getCepFim();
 
+		// tratativa de cep inválido/nao informado.
+		if (cepInicio == 0 || cepFim == 0) {
+			APICepResponse.Builder response = APICepResponse.newBuilder();
+			response.setResponseCode(400).setResponsemessage("Bad Request");
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
+			return;
+		}
+
 		StringBuilder query = new StringBuilder();
 
 		query.append("update cep ").append(id).append(" ").append(cepInicio).append(" ").append(cepFim);
 
 		try {
 			dataController.update(query.toString().split(" "));
-		} catch (IOException e) {
-			System.out.println("Falha ao atualizar banco");
-			e.printStackTrace();
+		} catch (Exception e) {
+			APICepResponse.Builder response = APICepResponse.newBuilder();
+			response.setResponseCode(500).setResponsemessage("Internal Server Error");
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
+			return;
 		}
-		
+
 		CepResponse.Builder builder = CepResponse.newBuilder();
 		builder.setId(id);
 		builder.setCepInicio(cepInicio);
@@ -99,22 +111,26 @@ public class CepService extends cepImplBase{
 
 		try {
 			dataController.delete(query.toString().split(" "));
-		} catch (IOException e) {
-			System.out.println("Falha ao remover do banco");
-			e.printStackTrace();
+		} catch (Exception e) {
+			APICepResponse.Builder response = APICepResponse.newBuilder();
+			response.setResponseCode(500).setResponsemessage("Internal Server Error");
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
+			return;
 		}
 
 		APICepResponse.Builder response = APICepResponse.newBuilder();
-		response.setResponseCode(201).setResponsemessage("Removed");
+		response.setResponseCode(204).setResponsemessage("No content");
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void readall(Empty request, StreamObserver<CepResponse> responseObserver) {
 		String query = "readall cep";
 		List<Ceps> ceps = (List<Ceps>) dataController.readAll(query.split(" "));
-		for (Ceps cep: ceps) {
+		for (Ceps cep : ceps) {
 			CepResponse.Builder builder = CepResponse.newBuilder();
 			builder.setId(cep.getId());
 			builder.setCepInicio(cep.getCepInicio());

@@ -1,6 +1,5 @@
 package com.sd.dfc.service;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -34,42 +33,42 @@ public class TransportadoraService extends transportadoraImplBase {
 
 		byte[] abrangencia = GRPCServer.cepDatabase.read(new BigInteger(String.valueOf(idAbrangencia)));
 
-		if (abrangencia != null) {
-
-			String[] cepValues = new String(abrangencia).split(" ");
-
-			StringBuilder query = new StringBuilder();
-			query.append("create transportadora ").append(nome).append(" ").append(idAbrangencia).append(" ")
-					.append(peso);
-
-			TransportadoraResponse.Builder transportadoraBuilder = TransportadoraResponse.newBuilder();
-			Cep.Builder abrangenciaBuilder = Cep.newBuilder();
-			abrangenciaBuilder.setCepInicio(Long.parseLong(cepValues[0]));
-			abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
-
-			try {
-				transportadoraBuilder.setId((int) dataControllerTransportadora.insert(query.toString().split(" ")));
-				transportadoraBuilder.setNome(nome);
-				transportadoraBuilder.setPeso(peso);
-				transportadoraBuilder.setAbrangencia(abrangenciaBuilder);
-
-			} catch (IOException e) {
-				System.out.println("Falha ao inserir no banco");
-				e.printStackTrace();
-			}
-
+		if (nome.length() == 0 || idAbrangencia == 0 || peso == 0.0 || abrangencia == null) {
 			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
-			response.setResponseCode(201).setResponsemessage("Transportadora cadastrada.")
-					.setTransportadora(transportadoraBuilder);
+			response.setResponseCode(400).setResponsemessage("Bad Request");
 			responseObserver.onNext(response.build());
 			responseObserver.onCompleted();
-		} else {
-			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
-			response.setResponseCode(201)
-					.setResponsemessage("Falha ao cadastrar transportadora. Abrangência informada existe?");
-			responseObserver.onNext(response.build());
-			responseObserver.onCompleted();
+			return;
 		}
+
+		String[] cepValues = new String(abrangencia).split(" ");
+
+		StringBuilder query = new StringBuilder();
+		query.append("create transportadora ").append(nome).append(" ").append(idAbrangencia).append(" ").append(peso);
+
+		TransportadoraResponse.Builder transportadoraBuilder = TransportadoraResponse.newBuilder();
+		Cep.Builder abrangenciaBuilder = Cep.newBuilder();
+		abrangenciaBuilder.setCepInicio(Long.parseLong(cepValues[0]));
+		abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
+
+		try {
+			transportadoraBuilder.setId((int) dataControllerTransportadora.insert(query.toString().split(" ")));
+			transportadoraBuilder.setNome(nome);
+			transportadoraBuilder.setPeso(peso);
+			transportadoraBuilder.setAbrangencia(abrangenciaBuilder);
+
+		} catch (Exception e) {
+			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
+			response.setResponseCode(500).setResponsemessage("Internal Server Error");
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
+			return;
+		}
+
+		APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
+		response.setResponseCode(201).setResponsemessage("Created").setTransportadora(transportadoraBuilder);
+		responseObserver.onNext(response.build());
+		responseObserver.onCompleted();
 	}
 
 	@Override
@@ -83,41 +82,43 @@ public class TransportadoraService extends transportadoraImplBase {
 
 		byte[] abrangencia = GRPCServer.cepDatabase.read(new BigInteger(String.valueOf(idAbrangencia)));
 
-		if (abrangencia != null) {
-			String[] cepValues = new String(abrangencia).split(" ");
-
-			StringBuilder query = new StringBuilder();
-			query.append("update transportadora ").append(id).append(" ").append(nome).append(" ").append(idAbrangencia)
-					.append(" ").append(peso);
-
-			TransportadoraResponse.Builder transportadoraBuilder = TransportadoraResponse.newBuilder();
-			Cep.Builder abrangenciaBuilder = Cep.newBuilder();
-			abrangenciaBuilder.setCepInicio(Long.parseLong(cepValues[0]));
-			abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
-
-			try {
-				dataControllerTransportadora.update(query.toString().split(" "));
-				transportadoraBuilder.setId(id);
-				transportadoraBuilder.setNome(nome);
-				transportadoraBuilder.setPeso(peso);
-				transportadoraBuilder.setAbrangencia(abrangenciaBuilder);
-			} catch (IOException e) {
-				System.out.println("Falha ao inserir no banco");
-				e.printStackTrace();
-			}
-
+		if (nome.length() == 0 || idAbrangencia == 0 || peso == 0.0 || abrangencia == null) {
 			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
-			response.setResponseCode(201).setResponsemessage("Transportadora atualizada.")
-					.setTransportadora(transportadoraBuilder);
+			response.setResponseCode(400).setResponsemessage("Bad Request");
 			responseObserver.onNext(response.build());
 			responseObserver.onCompleted();
-		} else {
+			return;
+		}
+
+		String[] cepValues = new String(abrangencia).split(" ");
+
+		StringBuilder query = new StringBuilder();
+		query.append("update transportadora ").append(id).append(" ").append(nome).append(" ").append(idAbrangencia)
+				.append(" ").append(peso);
+
+		TransportadoraResponse.Builder transportadoraBuilder = TransportadoraResponse.newBuilder();
+		Cep.Builder abrangenciaBuilder = Cep.newBuilder();
+		abrangenciaBuilder.setCepInicio(Long.parseLong(cepValues[0]));
+		abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
+
+		try {
+			dataControllerTransportadora.update(query.toString().split(" "));
+			transportadoraBuilder.setId(id);
+			transportadoraBuilder.setNome(nome);
+			transportadoraBuilder.setPeso(peso);
+			transportadoraBuilder.setAbrangencia(abrangenciaBuilder);
+		} catch (Exception e) {
 			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
-			response.setResponseCode(201)
-					.setResponsemessage("Falha ao atualizar transportadora. Abrangência informada existe?");
+			response.setResponseCode(500).setResponsemessage("Internal Server Error");
 			responseObserver.onNext(response.build());
 			responseObserver.onCompleted();
 		}
+
+		APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
+		response.setResponseCode(201).setResponsemessage("Transportadora atualizada.")
+				.setTransportadora(transportadoraBuilder);
+		responseObserver.onNext(response.build());
+		responseObserver.onCompleted();
 	}
 
 	@Override
@@ -129,22 +130,26 @@ public class TransportadoraService extends transportadoraImplBase {
 
 		try {
 			dataControllerTransportadora.delete(query.split(" "));
-		} catch (IOException e) {
-			System.out.println("Falha ao deletar do banco");
-			e.printStackTrace();
+		} catch (Exception e) {
+			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
+			response.setResponseCode(500).setResponsemessage("Internal Server Error");
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
 		}
 
 		APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
-		response.setResponseCode(201).setResponsemessage("Transportadora deletada.");
+		response.setResponseCode(204).setResponsemessage("No Content");
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void readall(Empty request, StreamObserver<TransportadoraResponse> responseObserver) {
 		String query = "readall transportadora";
-		List<Transportadora> transportadoras = (List<Transportadora>) dataControllerTransportadora.readAll(query.split(" "));
-		for (Transportadora t: transportadoras) {
+		List<Transportadora> transportadoras = (List<Transportadora>) dataControllerTransportadora
+				.readAll(query.split(" "));
+		for (Transportadora t : transportadoras) {
 			TransportadoraResponse.Builder tBuilder = TransportadoraResponse.newBuilder();
 			Cep.Builder cBuilder = Cep.newBuilder();
 			Ceps abrangencia = t.getAbrangencia();
@@ -153,7 +158,7 @@ public class TransportadoraService extends transportadoraImplBase {
 			tBuilder.setId((int) t.getId());
 			tBuilder.setAbrangencia(cBuilder);
 			tBuilder.setNome(t.getNome());
-			
+
 			responseObserver.onNext(tBuilder.build());
 		}
 		responseObserver.onCompleted();
