@@ -3,6 +3,8 @@ package com.sd.dfc.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.http.ParseException;
+
 import com.sd.dfc.controller.DataControllerCepsImpl;
 import com.sd.dfc.model.Ceps;
 import com.sd.grpc.CepOuterClass.APICepResponse;
@@ -26,7 +28,14 @@ public class CepService extends cepImplBase{
 		System.out.println("create cep request");
 		long cepInicio = (long) request.getCep().getCepInicio();
 		long cepFim = (long) request.getCep().getCepFim();
-
+		if (cepInicio == 0 || cepFim ==0) {
+			APICepResponse.Builder response = APICepResponse.newBuilder();
+			response.setResponseCode(201).setResponsemessage("faio").setCep(builder);
+			responseObserver.onNext(response.build());
+			responseObserver.onCompleted();
+			return;
+		}
+			
 		StringBuilder query = new StringBuilder();
 
 		query.append("create cep ").append(cepInicio).append(" ").append(cepFim);
