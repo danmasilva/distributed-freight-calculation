@@ -21,7 +21,7 @@ public class DatabaseTest  {
     public void testCreate_multiThreaded() throws InterruptedException {
     
         ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
-        Database2 db = new Database2();
+        Database db = new Database();
         String command = "a command";
         for (int i = 0; i < NUM_THREADS; i++) {
           executor.submit(new Runnable() {
