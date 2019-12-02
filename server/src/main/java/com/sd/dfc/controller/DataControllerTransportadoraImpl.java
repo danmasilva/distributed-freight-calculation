@@ -24,7 +24,7 @@ public class DataControllerTransportadoraImpl implements DataController {
 	private HeaderManipulator transportadoraHeader = new HeaderManipulator(this.headerName);
 
 	public DataControllerTransportadoraImpl() {
-		// cria snap a cada 30 segundos.
+		// cria snap a cada 60 segundos.
 		Timer t = new Timer();
 		t.schedule(new TimerTask() {
 			@Override
@@ -35,7 +35,7 @@ public class DataControllerTransportadoraImpl implements DataController {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 30000);
+		}, 0, 60000);
 	}
 
 	@Override

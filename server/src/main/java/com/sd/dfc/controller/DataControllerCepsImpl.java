@@ -23,7 +23,7 @@ public class DataControllerCepsImpl implements DataController {
 	private HeaderManipulator cepHeader = new HeaderManipulator(headerName);
 
 	public DataControllerCepsImpl() {
-		// cria snap a cada 30 segundos.
+		// cria snap a cada 60 segundos.
 		Timer t = new Timer();
 		t.schedule(new TimerTask() {
 			@Override
@@ -34,7 +34,7 @@ public class DataControllerCepsImpl implements DataController {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 30000);
+		}, 0, 60000);
 	}
 
 	@Override
@@ -92,15 +92,4 @@ public class DataControllerCepsImpl implements DataController {
 			throw new Exception(e);
 		}
 	}
-
-	public void scheduleSnapshot() {
-		Timer t = new Timer();
-		t.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				System.out.println("Hello World");
-			}
-		}, 0, 5000);
-	}
-
 }

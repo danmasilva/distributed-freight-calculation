@@ -1,25 +1,27 @@
 package com.sd.dfc.data;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Database extends ArchiveManipulator implements Serializable{
+import org.apache.commons.lang3.SerializationUtils;
+
+public class Database extends ArchiveManipulator implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 849942648731843734L;
-	
+
 	private Map<BigInteger, byte[]> map = new HashMap<>();
 	private AtomicInteger count = new AtomicInteger();
 
@@ -54,8 +56,27 @@ public class Database extends ArchiveManipulator implements Serializable{
 
 	private void recoverData(String fileName) {
 
+		if(fileName.equals("cep")||fileName.equals("transportadora")) {
+			// primeiro, recuperar o snap mais recente disponível
+			HeaderManipulator header = fileName == "cep" ? new HeaderManipulator("cepHeader.txt")
+					: new HeaderManipulator("transportadoraHeader.txt");
+			
+			Database wrapper;
+			
+			try {
+				wrapper = SerializationUtils.deserialize(this.getSnapshot(fileName + ".snap." + (header.getSnapCount()-1)));
+			} catch (Exception e) {
+				wrapper = null;
+			}
+			if(wrapper != null) {
+				this.map = wrapper.map;
+				this.count = wrapper.count;
+			}			
+		}
+		
+		//após, ler o buffer de comandos
 		try {
-			FileReader file = new FileReader(fileName);
+			FileReader file = new FileReader(fileName+".snap");
 			BufferedReader readFile = new BufferedReader(file);
 			String line;
 			String[] splittedCommand;
@@ -85,18 +106,13 @@ public class Database extends ArchiveManipulator implements Serializable{
 		}
 	}
 
-	public byte[] toBytes() {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput out = null;
-		
+	public byte[] getSnapshot(String snapName) {
 		try {
-			  out = new ObjectOutputStream(bos);   
-			  out.writeObject(this);
-			  out.flush();
-			 return bos.toByteArray();
+			return Files.readAllBytes(Paths.get(snapName));
 		}catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("snap " + snapName + " not found!");
 			return null;
 		}
 	}
+	
 }

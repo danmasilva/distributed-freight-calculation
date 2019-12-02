@@ -17,8 +17,8 @@ public class GRPCServer {
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 
-		cepDatabase = new Database("cep.txt");
-		transportadoraDatabase = new Database("transportadora.txt");
+		cepDatabase = new Database("cep");
+		transportadoraDatabase = new Database("transportadora");
 		
 		Server server = ServerBuilder
 				.forPort(PORT)
