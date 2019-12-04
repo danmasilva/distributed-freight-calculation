@@ -32,8 +32,8 @@ public class SocketClient {
         ReadPropertyFile prop = new ReadPropertyFile();
 
         try {
-            int port = Integer.parseInt(prop.getValue("dfc.port")) ;
-            String ip = prop.getValue("dfc.url");
+            int port = Integer.parseInt(prop.getValue("dfc.client.port")) ;
+            String ip = prop.getValue("dfc.client.url");
             
             server.startConnection(ip , port);
             Menu menu = new Menu();
