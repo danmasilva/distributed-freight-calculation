@@ -102,7 +102,7 @@ public class Database extends ArchiveManipulator implements Serializable {
 			readFile.close();
 
 		} catch (Exception e) {
-			System.err.println(Arrays.toString(e.getStackTrace()));
+			System.err.println("Não há buffer de comandos em "+ fileName + "para ser lido.");
 		}
 	}
 
