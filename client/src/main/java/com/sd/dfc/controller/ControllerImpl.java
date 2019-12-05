@@ -34,84 +34,101 @@ public class ControllerImpl implements Controller {
 
 		switch (splittedMessage[0]) {
 		case "create":
-			if (splittedMessage[1].equals("cep")) {
-				//parse exception
-				Cep cep = Cep.newBuilder().setCepInicio(Long.parseLong(splittedMessage[2]))
-						.setCepFim(Long.parseLong(splittedMessage[3])).build();
-				APICepResponse response = cepStub.create(CreateRequest.newBuilder().setCep(cep).build());
-				return response.getResponseCode();
-			} else if (splittedMessage[1].equals("transportadora")) {
-				Transportadora t = Transportadora.newBuilder().setNome(splittedMessage[2])
-						.setIdAbrangencia(Integer.parseInt(splittedMessage[3]))
-						.setPeso(Double.parseDouble(splittedMessage[4])).build();
-				APITransportadoraResponse response = transportadoraStub.create(
-						com.sd.grpc.TransportadoraOuterClass.CreateRequest.newBuilder().setTransportadora(t).build());
-				return response.getResponseCode();
-			} else // -1 indica que o comando foi digitado incorretamente pelo cliente
-				return -1;
+			try {
+				if (splittedMessage[1].equals("cep")) {
+					Cep cep = Cep.newBuilder().setCepInicio(Long.parseLong(splittedMessage[2]))
+							.setCepFim(Long.parseLong(splittedMessage[3])).build();
+					APICepResponse response = cepStub.create(CreateRequest.newBuilder().setCep(cep).build());
+					return response.getResponseCode();
+				} else if (splittedMessage[1].equals("transportadora")) {
+					Transportadora t = Transportadora.newBuilder().setNome(splittedMessage[2])
+							.setIdAbrangencia(Integer.parseInt(splittedMessage[3]))
+							.setPeso(Double.parseDouble(splittedMessage[4])).build();
+					APITransportadoraResponse response = transportadoraStub
+							.create(com.sd.grpc.TransportadoraOuterClass.CreateRequest.newBuilder().setTransportadora(t)
+									.build());
+					return response.getResponseCode();
+				} else
+					return 400;
+			} catch (Exception e) {
+				return 400;
+			}
 		case "update":
-			if (splittedMessage[1].equals("cep")) {
-				int id = Integer.parseInt(splittedMessage[2]);
-				Cep cep = Cep.newBuilder().setCepInicio(Long.parseLong(splittedMessage[3]))
-						.setCepFim(Long.parseLong(splittedMessage[4])).build();
-				APICepResponse response = cepStub.update(UpdateRequest.newBuilder().setId(id).setCep(cep).build());
-				return response.getResponseCode();
-			} else if (splittedMessage[1].equals("transportadora")) {
-				int id = Integer.parseInt(splittedMessage[2]);
-				Transportadora t = Transportadora.newBuilder().setNome(splittedMessage[3])
-						.setIdAbrangencia(Integer.parseInt(splittedMessage[4]))
-						.setPeso(Double.parseDouble(splittedMessage[5])).build();
-				APITransportadoraResponse response = transportadoraStub.create(
-						com.sd.grpc.TransportadoraOuterClass.CreateRequest.newBuilder().setTransportadora(t).build());
-				return response.getResponseCode();
-			} else
-				return -1;
+			try {
+				if (splittedMessage[1].equals("cep")) {
+					int id = Integer.parseInt(splittedMessage[2]);
+					Cep cep = Cep.newBuilder().setCepInicio(Long.parseLong(splittedMessage[3]))
+							.setCepFim(Long.parseLong(splittedMessage[4])).build();
+					APICepResponse response = cepStub.update(UpdateRequest.newBuilder().setId(id).setCep(cep).build());
+					return response.getResponseCode();
+
+				} else if (splittedMessage[1].equals("transportadora")) {
+					int id = Integer.parseInt(splittedMessage[2]);
+					Transportadora t = Transportadora.newBuilder().setNome(splittedMessage[3])
+							.setIdAbrangencia(Integer.parseInt(splittedMessage[4]))
+							.setPeso(Double.parseDouble(splittedMessage[5])).build();
+					APITransportadoraResponse response = transportadoraStub
+							.update(com.sd.grpc.TransportadoraOuterClass.UpdateRequest.newBuilder().setId(id)
+									.setTransportadora(t).build());
+					return response.getResponseCode();
+				} else
+					return 400;
+			} catch (Exception e) {
+				return 400;
+			}
 		case "delete":
-			if (splittedMessage[1].equals("cep")) {
-				int id = Integer.parseInt(splittedMessage[2]);
-				APICepResponse response = cepStub.delete(DeleteRequest.newBuilder().setId(id).build());
-				return response.getResponseCode();
-			} else if (splittedMessage[1].equals("transportadora")) {
-				int id = Integer.parseInt(splittedMessage[2]);
-				APITransportadoraResponse response = transportadoraStub
-						.delete(com.sd.grpc.TransportadoraOuterClass.DeleteRequest.newBuilder().setId(id).build());
-				return response.getResponseCode();
-			} else
-				return -1;
+			try {
+				if (splittedMessage[1].equals("cep")) {
+					int id = Integer.parseInt(splittedMessage[2]);
+					APICepResponse response = cepStub.delete(DeleteRequest.newBuilder().setId(id).build());
+					return response.getResponseCode();
+				} else if (splittedMessage[1].equals("transportadora")) {
+					int id = Integer.parseInt(splittedMessage[2]);
+					APITransportadoraResponse response = transportadoraStub
+							.delete(com.sd.grpc.TransportadoraOuterClass.DeleteRequest.newBuilder().setId(id).build());
+					return response.getResponseCode();
+				} else
+					return 400;
+			} catch (Exception e) {
+				return 400;
+			}
 		case "readall":
-			StringBuilder result = new StringBuilder();
-			if (splittedMessage[1].equals("cep")) {
-				Iterator<CepResponse> response = cepStub.readall(cepEmpty);
+			try {
+				StringBuilder result = new StringBuilder();
+				if (splittedMessage[1].equals("cep")) {
+					Iterator<CepResponse> response = cepStub.readall(cepEmpty);
 
-				while (response.hasNext()) {
-					CepResponse item = response.next();
-					result.append(item.getId()).append(": de ").append(item.getCepInicio()).append(" até ").append(item)
-							.append(", ");
-				}
-				System.out.println(result.toString().substring(0, result.length() - 2));
-				return 0;
+					while (response.hasNext()) {
+						CepResponse item = response.next();
+						result.setLength(0);
+						result.append(item.getId()).append(": de ").append(item.getCepInicio()).append(" até ")
+								.append(item.getCepFim());
+						System.out.println(result);
+					}
+					return 200;
 
-			} else if (splittedMessage[1].equals("transportadora")) {
-				Iterator<TransportadoraResponse> response = transportadoraStub.readall(transportadoraEmpty);
+				} else if (splittedMessage[1].equals("transportadora")) {
+					Iterator<TransportadoraResponse> response = transportadoraStub.readall(transportadoraEmpty);
 
-				while (response.hasNext()) {
-					TransportadoraResponse item = response.next();
+					while (response.hasNext()) {
+						TransportadoraResponse item = response.next();
+						result.setLength(0);
+						result.append(item.getId()).append(": ").append(item.getNome()).append(", peso ")
+								.append(item.getPeso()).append(" e abrangência de ")
+								.append(item.getAbrangencia().getCepInicio()).append(" a ")
+								.append(item.getAbrangencia().getCepFim());
+						System.out.println(result);
+					}
+					return 200;
 
-					result.append(item.getId()).append(": ").append(item.getNome()).append(", peso ")
-							.append(item.getPeso()).append(" e abrangência de ")
-							.append(item.getAbrangencia().getCepInicio()).append(" a ")
-							.append(item.getAbrangencia().getCepFim()).append(", ");
-				}
-				System.out.println(result.toString().substring(0, result.length() - 2));
-				return 0;
-
-			} else
-				return -1;
-
+				} else
+					return 400;
+			} catch (Exception e) {
+				return 400;
+			}
 		default:
-			return -1;
+			return 400;
 		}
-
 	}
 
 }

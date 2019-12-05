@@ -1,15 +1,11 @@
 package com.sd.dfc.client;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.Scanner;
 
 import com.sd.dfc.config.ReadPropertyFile;
 import com.sd.dfc.controller.Controller;
 import com.sd.dfc.controller.ControllerImpl;
 import com.sd.dfc.principal.Menu;
-import com.sd.grpc.CepOuterClass.CepResponse;
-import com.sd.grpc.cepGrpc.cepStub;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -19,36 +15,49 @@ public class GRPCClient {
 		ReadPropertyFile prop = new ReadPropertyFile();
 		Controller controller = new ControllerImpl();
 		
-		String ip = prop.getValue("dfc.url");
-		int port = Integer.parseInt(prop.getValue("dfc.port")) ;
+		String ip = prop.getValue("dfc.client.url");
+		int port = Integer.parseInt(prop.getValue("dfc.client.port")) ;
 		
 		ManagedChannel channel = ManagedChannelBuilder.forAddress(ip, port)
 			.usePlaintext().build();
-
 		
-		Iterator<CepResponse> cepResponse = cepStub.readall(cepEmpty);
-		
-
 		Menu menu = new Menu();
         System.out.println(menu.presentMenu());
 
         Scanner s = new Scanner(System.in);
         String text;
         
-        try {
-
         while (true) {
 
             text = s.nextLine();
 
             if (!(text).equals("sair") && !(text).equals("quit") && !(text).equals("exit")) {
-                controller.dealWith(text, channel);
+                int response = controller.dealWith(text, channel);
+                switch (response) {
+                case 200:
+                	System.out.println("200 - OK");
+                	break;
+				case 201:
+					System.out.println("201 - Created");
+					break;
+				case 204:
+					System.out.println("204 - No Content");
+					break;
+				case 400:
+					System.out.println("400 - Bad Request");
+					break;
+				case 404:
+					System.out.println("404 - Not Found");
+					break;
+				case 500:
+					System.out.println("500 - Internal Server Error");
+
+				default:
+					break;
+				}
             } else
                 break;
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 		
 		
 	}

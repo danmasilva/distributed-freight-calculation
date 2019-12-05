@@ -115,7 +115,7 @@ public class TransportadoraService extends transportadoraImplBase {
 		}
 
 		APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
-		response.setResponseCode(201).setResponsemessage("Transportadora atualizada.")
+		response.setResponseCode(201).setResponsemessage("Updated")
 				.setTransportadora(transportadoraBuilder);
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();

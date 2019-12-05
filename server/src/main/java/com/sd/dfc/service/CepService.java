@@ -95,7 +95,7 @@ public class CepService extends cepImplBase {
 		builder.setCepFim(cepFim);
 
 		APICepResponse.Builder response = APICepResponse.newBuilder();
-		response.setResponseCode(200).setResponsemessage("Updated").setCep(builder);
+		response.setResponseCode(201).setResponsemessage("Updated").setCep(builder);
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
 	}
