@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_package = "com.sd.grpc";
+
+service pricing {
+    rpc defPricing(PrecoRequest) returns (stream PrecoReturn);
+}
+
+message PrecoRequest{
+    int64 cep = 1;
+    double peso = 2;
+}
+
+message PrecoReturn{
+    int32 responseCode = 1;
+    string transportadora = 2;
+    double price = 3;
+}
+
+
+
+
+

@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.sd.dfc.config.ReadPropertyFile;
 import com.sd.dfc.data.Database;
 import com.sd.dfc.service.CepService;
+import com.sd.dfc.service.PricingService;
 import com.sd.dfc.service.TransportadoraService;
 
 import io.grpc.Server;
@@ -31,6 +32,7 @@ public class GRPCServer {
 				.forPort(PORT)
 				.addService( new CepService())
 				.addService(new TransportadoraService())
+				.addService(new PricingService())
 				.build();
 		
 		server.start();
