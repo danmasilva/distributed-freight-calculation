@@ -1,8 +1,8 @@
 package com.sd.dfc.server;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 import com.sd.dfc.chord.Helper;
 import com.sd.dfc.chord.Node;
@@ -36,27 +36,34 @@ public class GRPCServer {
 		cepDatabase = new Database("cep");
 		transportadoraDatabase = new Database("transportadora");
 
-		String local_ip = InetAddress.getLocalHost().getHostAddress();
+		String local_ip;
+		try (final DatagramSocket socket = new DatagramSocket()) {
+			socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+			local_ip = socket.getLocalAddress().getHostAddress();
+		}
+
+		// String local_ip = InetAddress.getLocalHost().getHostAddress();
 		String contact_ip = null;
 		int contact_port = -1;
 		int qtd_nodes = -1;
 		int node_id = -1;
 
-		if (args.length == 3) { // primeiro nó a entrar no anel, seu id será 0
+		if (args.length == 3) { // primeiro nó a entrar no anel
 			qtd_nodes = Integer.parseInt(args[1]);
 			node_id = Integer.parseInt(args[2]);
 		} else if (args.length == 5) { // nó participante de anel existente
-			
+
 			qtd_nodes = Integer.parseInt(args[1]);
 			node_id = Integer.parseInt(args[2]);
 			contact_ip = args[3];
 			contact_port = Integer.parseInt(args[4]);
 		}
 
-		m_node = new Node(Helper.createSocketAddress(local_ip + ":" + args[0]), qtd_nodes, node_id, contact_ip, contact_port);
-		
-		Server server = ServerBuilder.forPort(PORT*10).addService(new CepService()).addService(new TransportadoraService())
-				.addService(new PricingService()).build();
+		m_node = new Node(Helper.createSocketAddress(local_ip + ":" + args[0]), qtd_nodes, node_id, contact_ip,
+				contact_port);
+
+		Server server = ServerBuilder.forPort(PORT * 10).addService(new CepService())
+				.addService(new TransportadoraService()).addService(new PricingService()).build();
 
 		server.start();
 		System.out.println("Server started at " + server.getPort());

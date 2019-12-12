@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class Talker implements Runnable {
+public class Talker extends Thread{
 	Socket talkSocket;
 	private Node local;
 
@@ -41,21 +41,23 @@ public class Talker implements Runnable {
 		}
 
 		if (request.startsWith("FINDID_")) {
+			System.out.println("olá");
 			String[] splittedMessage = request.split("_");
 			int id = Integer.parseInt(request.split("_")[1]);
 			String address = request.split("_")[2];
 			int port = Integer.parseInt(request.split("_")[3]);
 			InetSocketAddress joinedNode = new InetSocketAddress(address, port);
 
-			//local.fillJoinedNode(id, joinedNode);
+			local.fillJoinedNode(id, joinedNode);
 
 			result = local.fingerToString();
 			
 			ret = "FOUNDSUCC_" + result;
-
-		} else if (request.startsWith("KEEP")) {
-			ret = "ALIVE";
+		} else if(request.startsWith("UPDATEFINGER_")) {
+			local.updateFinger(request.split("_"));
 		}
+		
+		
 		return ret;
 	}
 }

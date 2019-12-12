@@ -1,17 +1,12 @@
 package com.sd.dfc.chord;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
-/**
- * Listener thread that keeps listening to a port and asks talker thread to
- * process when a request is accepted.
- * 
- * @author Chuan Xia
- *
- */
 
 public class Listener extends Thread {
 
@@ -35,7 +30,7 @@ public class Listener extends Thread {
 
 	@Override
 	public void run() {
-		while (alive) {
+		while (true) {
 			Socket talkSocket = null;
 			try {
 				talkSocket = serverSocket.accept();
@@ -44,11 +39,12 @@ public class Listener extends Thread {
 			}
 
 			// new talker
-			new Thread(new Talker(talkSocket, local)).start();
+			new Talker(talkSocket, local).start();
 		}
 	}
 
 	public void toDie() {
 		alive = false;
 	}
+
 }
