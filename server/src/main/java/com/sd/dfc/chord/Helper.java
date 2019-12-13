@@ -157,4 +157,14 @@ public class Helper {
 		return line;
 	}
 
+	// transforma o vetor de strings numa string espaçada
+	public static String toString(String[] splittedMessage) {
+		StringBuilder message = new StringBuilder();
+		for (String string : splittedMessage) {
+			message.append(string).append(" ");
+		}
+		// retira o ultimo espaço
+		return message.substring(0, message.length() - 1);
+	}
+
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.sd.dfc.chord.Helper;
 import com.sd.dfc.chord.Node;
 import com.sd.dfc.data.ArchiveManipulator;
 import com.sd.dfc.data.HeaderManipulator;
@@ -43,7 +44,7 @@ public class DataControllerCepsImpl implements DataController {
 	@Override
 	public long insert(String[] splittedMessage) throws Exception {
 
-		int hashValue = chordController.hashData(splittedMessage.toString(), Node.ring_size);
+		int hashValue = chordController.hashData(Helper.toString(splittedMessage), Node.ring_size);
 		if (chordController.responsibleForData(hashValue, Node.localId, Node.hole_size)) {
 
 			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
@@ -59,7 +60,7 @@ public class DataControllerCepsImpl implements DataController {
 			}
 			return createdId;
 		} else {
-			return GRPCServer.m_node.sendDataQuery(hashValue, splittedMessage);
+			return GRPCServer.m_node.sendInsertQuery(hashValue, splittedMessage);
 		}
 	}
 
@@ -79,15 +80,20 @@ public class DataControllerCepsImpl implements DataController {
 
 	@Override
 	public byte[] update(String[] splittedMessage) throws Exception {
-		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-
-		try {
-			cepArchive.write(String.join(" ", splittedList));
-			return GRPCServer.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
-					String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception(e);
+		int hashValue = chordController.hashData(Helper.toString(splittedMessage), Node.ring_size);
+		if (chordController.responsibleForData(hashValue, Node.localId, Node.hole_size)) {
+			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+			
+			try {
+				cepArchive.write(String.join(" ", splittedList));
+				return GRPCServer.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+						String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new Exception(e);
+			}
+		} else {
+			return GRPCServer.m_node.sendUpdateQuery(hashValue, splittedMessage);
 		}
 	}
 

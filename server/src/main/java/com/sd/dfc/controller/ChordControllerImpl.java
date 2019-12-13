@@ -1,11 +1,22 @@
 package com.sd.dfc.controller;
 
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+
 public class ChordControllerImpl implements ChordController{
 
 	@Override
 	public int hashData(String data, int ring_size) {
-		int i = Math.abs(data.hashCode());
-		return i % ring_size;
+		int hash = -1;
+		try {
+			MessageDigest algorithm = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = algorithm.digest(data.getBytes());
+			hash = ByteBuffer.wrap(messageDigest).getInt();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		return Math.abs(hash) % ring_size;
 	}
 
 	@Override
