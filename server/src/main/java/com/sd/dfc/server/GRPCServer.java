@@ -18,7 +18,7 @@ public class GRPCServer {
 
 	public static Database cepDatabase = null;
 	public static Database transportadoraDatabase = null;
-	private static Node m_node;
+	public static Node m_node;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 
