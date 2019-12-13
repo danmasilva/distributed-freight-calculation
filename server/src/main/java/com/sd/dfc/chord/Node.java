@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class Node {
 
-	private int localId;
+	public static int localId;
 	private InetSocketAddress localAddress;
 	private HashMap<Integer, InetSocketAddress> fingerAddress;
 	private HashMap<Integer, Integer> fingerId;
-	private int hole_size;
-	private int ring_size;
+	public static int hole_size;
+	public static int ring_size;
 
 	private Listener listener;
 
@@ -83,10 +83,11 @@ public class Node {
 
 		// envia para todos os threads conhecidos a nova finger.
 		for (int i = 0; i < ring_size; i += hole_size) {
-			if (fingerAddress.get(i) == null)
-				continue;
-			InetSocketAddress address = new InetSocketAddress(fingerAddress.get(i).getHostName(), fingerAddress.get(i).getPort());
-			Helper.requestAddress(address, "UPDATEFINGER_" + fingerToString());
+			if (fingerAddress.get(i) != null) {
+				InetSocketAddress address = new InetSocketAddress(fingerAddress.get(i).getHostName(),
+						fingerAddress.get(i).getPort());
+				Helper.requestAddress(address, "UPDATEFINGER_" + fingerToString());
+			}
 		}
 
 		return true;
@@ -95,13 +96,12 @@ public class Node {
 	public String fingerToString() {
 		StringBuilder result = new StringBuilder();
 		Iterator it = fingerAddress.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry) it.next();
-			if (pair.getValue() == null)
-				continue;
-			result.append("_" + pair.getKey() + "_" + pair.getValue());
-		}
 
+		fingerAddress.forEach((key, value) -> {
+			if (value != null) {
+				result.append("_" + key + "_" + value);
+			}
+		});
 		return result.substring(1);
 	}
 
@@ -138,6 +138,21 @@ public class Node {
 
 	public void updateFinger(String[] responseFinger) {
 		this.fingerAddress = (HashMap<Integer, InetSocketAddress>) stringToFinger(responseFinger);
+	}
+
+	// métodos para lidar com requisições de dados
+	public long sendDataQuery(int hashValue, String[] splittedMessage) {
+		String queryType = splittedMessage[0].toUpperCase();
+		String result;
+		for (int i = 0; i < fingerId.size(); i++) {
+			if (fingerId.get(i) >= hashValue) {
+				result = Helper.sendRequest(fingerAddress.get(fingerId.get(i)), queryType + "_" + splittedMessage.toString());
+			}
+		}
+		// se nao há candidato na finger table, mandar para o maior possível:
+		result = Helper.sendRequest(fingerAddress.get(fingerId.get(fingerId.size())),
+				queryType + "_" + splittedMessage.toString());
+		return result.startsWith("SUCCESS") ? 0 : -1;
 	}
 
 }

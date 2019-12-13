@@ -3,6 +3,7 @@ package com.sd.dfc.controller;
 import java.util.List;
 
 public interface DataController {
+	
     //insere o dado no database e escreve o comando no arquivo, retorna o id do objeto criado
     long insert(String[] splittedList) throws Exception;
 

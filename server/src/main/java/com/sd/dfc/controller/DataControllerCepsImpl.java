@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.sd.dfc.chord.Node;
 import com.sd.dfc.data.ArchiveManipulator;
 import com.sd.dfc.data.HeaderManipulator;
 import com.sd.dfc.model.Ceps;
@@ -21,6 +22,8 @@ public class DataControllerCepsImpl implements DataController {
 
 	private ArchiveManipulator cepArchive = new ArchiveManipulator(this.fileName);
 	private HeaderManipulator cepHeader = new HeaderManipulator(headerName);
+
+	ChordController chordController = new ChordControllerImpl();
 
 	public DataControllerCepsImpl() {
 		// cria snap a cada 60 segundos.
@@ -39,18 +42,25 @@ public class DataControllerCepsImpl implements DataController {
 
 	@Override
 	public long insert(String[] splittedMessage) throws Exception {
-		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-		long createdId;
 
-		try {
-			createdId = GRPCServer.cepDatabase
-					.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
-			cepArchive.write(String.join(" ", splittedList));
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception(e);
+		int hashValue = chordController.hashData(splittedMessage.toString(), Node.ring_size);
+		if (chordController.responsibleForData(hashValue, Node.localId, Node.hole_size)) {
+
+			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+			long createdId;
+
+			try {
+				createdId = GRPCServer.cepDatabase
+						.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+				cepArchive.write(String.join(" ", splittedList));
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new Exception(e);
+			}
+			return createdId;
+		} else {
+			return GRPCServer.m_node.sendDataQuery(hashValue, splittedMessage);
 		}
-		return createdId;
 	}
 
 	@Override
@@ -92,4 +102,5 @@ public class DataControllerCepsImpl implements DataController {
 			throw new Exception(e);
 		}
 	}
+
 }
