@@ -567,17 +567,27 @@ public final class Business {
     int getResponseCode();
 
     /**
-     * <code>string transportadora = 2;</code>
+     * <code>string responsemessage = 2;</code>
+     */
+    java.lang.String getResponsemessage();
+    /**
+     * <code>string responsemessage = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getResponsemessageBytes();
+
+    /**
+     * <code>string transportadora = 3;</code>
      */
     java.lang.String getTransportadora();
     /**
-     * <code>string transportadora = 2;</code>
+     * <code>string transportadora = 3;</code>
      */
     com.google.protobuf.ByteString
         getTransportadoraBytes();
 
     /**
-     * <code>double price = 3;</code>
+     * <code>double price = 4;</code>
      */
     double getPrice();
   }
@@ -595,6 +605,7 @@ public final class Business {
     }
     private PrecoReturn() {
       responseCode_ = 0;
+      responsemessage_ = "";
       transportadora_ = "";
       price_ = 0D;
     }
@@ -631,10 +642,16 @@ public final class Business {
             case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
+              responsemessage_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
               transportadora_ = s;
               break;
             }
-            case 25: {
+            case 33: {
 
               price_ = input.readDouble();
               break;
@@ -680,10 +697,44 @@ public final class Business {
       return responseCode_;
     }
 
-    public static final int TRANSPORTADORA_FIELD_NUMBER = 2;
+    public static final int RESPONSEMESSAGE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object responsemessage_;
+    /**
+     * <code>string responsemessage = 2;</code>
+     */
+    public java.lang.String getResponsemessage() {
+      java.lang.Object ref = responsemessage_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        responsemessage_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string responsemessage = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getResponsemessageBytes() {
+      java.lang.Object ref = responsemessage_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        responsemessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TRANSPORTADORA_FIELD_NUMBER = 3;
     private volatile java.lang.Object transportadora_;
     /**
-     * <code>string transportadora = 2;</code>
+     * <code>string transportadora = 3;</code>
      */
     public java.lang.String getTransportadora() {
       java.lang.Object ref = transportadora_;
@@ -698,7 +749,7 @@ public final class Business {
       }
     }
     /**
-     * <code>string transportadora = 2;</code>
+     * <code>string transportadora = 3;</code>
      */
     public com.google.protobuf.ByteString
         getTransportadoraBytes() {
@@ -714,10 +765,10 @@ public final class Business {
       }
     }
 
-    public static final int PRICE_FIELD_NUMBER = 3;
+    public static final int PRICE_FIELD_NUMBER = 4;
     private double price_;
     /**
-     * <code>double price = 3;</code>
+     * <code>double price = 4;</code>
      */
     public double getPrice() {
       return price_;
@@ -740,11 +791,14 @@ public final class Business {
       if (responseCode_ != 0) {
         output.writeInt32(1, responseCode_);
       }
+      if (!getResponsemessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, responsemessage_);
+      }
       if (!getTransportadoraBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, transportadora_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, transportadora_);
       }
       if (price_ != 0D) {
-        output.writeDouble(3, price_);
+        output.writeDouble(4, price_);
       }
       unknownFields.writeTo(output);
     }
@@ -759,12 +813,15 @@ public final class Business {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, responseCode_);
       }
+      if (!getResponsemessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, responsemessage_);
+      }
       if (!getTransportadoraBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, transportadora_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, transportadora_);
       }
       if (price_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(3, price_);
+          .computeDoubleSize(4, price_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -784,6 +841,8 @@ public final class Business {
       boolean result = true;
       result = result && (getResponseCode()
           == other.getResponseCode());
+      result = result && getResponsemessage()
+          .equals(other.getResponsemessage());
       result = result && getTransportadora()
           .equals(other.getTransportadora());
       result = result && (
@@ -803,6 +862,8 @@ public final class Business {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + RESPONSECODE_FIELD_NUMBER;
       hash = (53 * hash) + getResponseCode();
+      hash = (37 * hash) + RESPONSEMESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getResponsemessage().hashCode();
       hash = (37 * hash) + TRANSPORTADORA_FIELD_NUMBER;
       hash = (53 * hash) + getTransportadora().hashCode();
       hash = (37 * hash) + PRICE_FIELD_NUMBER;
@@ -943,6 +1004,8 @@ public final class Business {
         super.clear();
         responseCode_ = 0;
 
+        responsemessage_ = "";
+
         transportadora_ = "";
 
         price_ = 0D;
@@ -974,6 +1037,7 @@ public final class Business {
       public com.sd.grpc.Business.PrecoReturn buildPartial() {
         com.sd.grpc.Business.PrecoReturn result = new com.sd.grpc.Business.PrecoReturn(this);
         result.responseCode_ = responseCode_;
+        result.responsemessage_ = responsemessage_;
         result.transportadora_ = transportadora_;
         result.price_ = price_;
         onBuilt();
@@ -1026,6 +1090,10 @@ public final class Business {
         if (other == com.sd.grpc.Business.PrecoReturn.getDefaultInstance()) return this;
         if (other.getResponseCode() != 0) {
           setResponseCode(other.getResponseCode());
+        }
+        if (!other.getResponsemessage().isEmpty()) {
+          responsemessage_ = other.responsemessage_;
+          onChanged();
         }
         if (!other.getTransportadora().isEmpty()) {
           transportadora_ = other.transportadora_;
@@ -1089,9 +1157,78 @@ public final class Business {
         return this;
       }
 
+      private java.lang.Object responsemessage_ = "";
+      /**
+       * <code>string responsemessage = 2;</code>
+       */
+      public java.lang.String getResponsemessage() {
+        java.lang.Object ref = responsemessage_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          responsemessage_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string responsemessage = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getResponsemessageBytes() {
+        java.lang.Object ref = responsemessage_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          responsemessage_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string responsemessage = 2;</code>
+       */
+      public Builder setResponsemessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        responsemessage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string responsemessage = 2;</code>
+       */
+      public Builder clearResponsemessage() {
+        
+        responsemessage_ = getDefaultInstance().getResponsemessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string responsemessage = 2;</code>
+       */
+      public Builder setResponsemessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        responsemessage_ = value;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object transportadora_ = "";
       /**
-       * <code>string transportadora = 2;</code>
+       * <code>string transportadora = 3;</code>
        */
       public java.lang.String getTransportadora() {
         java.lang.Object ref = transportadora_;
@@ -1106,7 +1243,7 @@ public final class Business {
         }
       }
       /**
-       * <code>string transportadora = 2;</code>
+       * <code>string transportadora = 3;</code>
        */
       public com.google.protobuf.ByteString
           getTransportadoraBytes() {
@@ -1122,7 +1259,7 @@ public final class Business {
         }
       }
       /**
-       * <code>string transportadora = 2;</code>
+       * <code>string transportadora = 3;</code>
        */
       public Builder setTransportadora(
           java.lang.String value) {
@@ -1135,7 +1272,7 @@ public final class Business {
         return this;
       }
       /**
-       * <code>string transportadora = 2;</code>
+       * <code>string transportadora = 3;</code>
        */
       public Builder clearTransportadora() {
         
@@ -1144,7 +1281,7 @@ public final class Business {
         return this;
       }
       /**
-       * <code>string transportadora = 2;</code>
+       * <code>string transportadora = 3;</code>
        */
       public Builder setTransportadoraBytes(
           com.google.protobuf.ByteString value) {
@@ -1160,13 +1297,13 @@ public final class Business {
 
       private double price_ ;
       /**
-       * <code>double price = 3;</code>
+       * <code>double price = 4;</code>
        */
       public double getPrice() {
         return price_;
       }
       /**
-       * <code>double price = 3;</code>
+       * <code>double price = 4;</code>
        */
       public Builder setPrice(double value) {
         
@@ -1175,7 +1312,7 @@ public final class Business {
         return this;
       }
       /**
-       * <code>double price = 3;</code>
+       * <code>double price = 4;</code>
        */
       public Builder clearPrice() {
         
@@ -1256,11 +1393,11 @@ public final class Business {
   static {
     java.lang.String[] descriptorData = {
       "\n\016business.proto\")\n\014PrecoRequest\022\013\n\003cep\030" +
-      "\001 \001(\003\022\014\n\004peso\030\002 \001(\001\"J\n\013PrecoReturn\022\024\n\014re" +
-      "sponseCode\030\001 \001(\005\022\026\n\016transportadora\030\002 \001(\t" +
-      "\022\r\n\005price\030\003 \001(\00126\n\007pricing\022+\n\ndefPricing" +
-      "\022\r.PrecoRequest\032\014.PrecoReturn0\001B\r\n\013com.s" +
-      "d.grpcb\006proto3"
+      "\001 \001(\003\022\014\n\004peso\030\002 \001(\001\"c\n\013PrecoReturn\022\024\n\014re" +
+      "sponseCode\030\001 \001(\005\022\027\n\017responsemessage\030\002 \001(" +
+      "\t\022\026\n\016transportadora\030\003 \001(\t\022\r\n\005price\030\004 \001(\001" +
+      "26\n\007pricing\022+\n\ndefPricing\022\r.PrecoRequest" +
+      "\032\014.PrecoReturn0\001B\r\n\013com.sd.grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1285,7 +1422,7 @@ public final class Business {
     internal_static_PrecoReturn_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PrecoReturn_descriptor,
-        new java.lang.String[] { "ResponseCode", "Transportadora", "Price", });
+        new java.lang.String[] { "ResponseCode", "Responsemessage", "Transportadora", "Price", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

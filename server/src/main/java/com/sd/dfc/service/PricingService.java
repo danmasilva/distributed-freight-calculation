@@ -10,6 +10,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.List;
 
 public class PricingService extends pricingImplBase {
+    public final double TAXA_SERVICO = 1.2;
 
     DataControllerTransportadoraImpl dataControllerTransportadora = new DataControllerTransportadoraImpl();
     @Override
@@ -22,7 +23,7 @@ public class PricingService extends pricingImplBase {
 
         if (cep == 0 || peso == 0.0 ) {
             Business.PrecoReturn.Builder response = Business.PrecoReturn.newBuilder();
-            response.setResponseCode(400);
+            response.setResponseCode(400).setResponsemessage("Bad Request");
             responseObserver.onNext(response.build());
             responseObserver.onCompleted();
             return;
@@ -32,12 +33,13 @@ public class PricingService extends pricingImplBase {
         for (Transportadora t : transportadoras) {
             if(t.getAbrangencia().getCepInicio() < cep && t.getAbrangencia().getCepFim()>cep) {
                 Business.PrecoReturn.Builder response = Business.PrecoReturn.newBuilder();
-                response.setResponseCode((int) 200);
+                response.setResponseCode((int) 200).setResponsemessage("OK");
                 response.setTransportadora(t.getNome());
-                response.setPrice((double) t.getPeso() * 1.2);
+                response.setPrice((double) t.getPeso() * TAXA_SERVICO);
 
                 responseObserver.onNext(response.build());
             }
+            
         }
         responseObserver.onCompleted();
     }
