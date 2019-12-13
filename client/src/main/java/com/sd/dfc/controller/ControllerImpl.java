@@ -1,7 +1,9 @@
 package com.sd.dfc.controller;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 
+import com.sd.grpc.Business;
 import com.sd.grpc.CepOuterClass.APICepResponse;
 import com.sd.grpc.CepOuterClass.Cep;
 import com.sd.grpc.CepOuterClass.CepResponse;
@@ -15,6 +17,11 @@ import com.sd.grpc.cepGrpc;
 import com.sd.grpc.cepGrpc.cepBlockingStub;
 import com.sd.grpc.transportadoraGrpc;
 import com.sd.grpc.transportadoraGrpc.transportadoraBlockingStub;
+import com.sd.grpc.pricingGrpc.pricingBlockingStub;
+import com.sd.grpc.pricingGrpc;
+import com.sd.grpc.Business.PrecoRequest;
+import com.sd.grpc.Business.PrecoReturn;
+
 
 import io.grpc.ManagedChannel;
 
@@ -25,10 +32,13 @@ public class ControllerImpl implements Controller {
 
 		cepBlockingStub cepStub = cepGrpc.newBlockingStub(channel);
 		transportadoraBlockingStub transportadoraStub = transportadoraGrpc.newBlockingStub(channel);
+		pricingBlockingStub pricingStub = pricingGrpc.newBlockingStub(channel);
 
 		com.sd.grpc.CepOuterClass.Empty cepEmpty = com.sd.grpc.CepOuterClass.Empty.newBuilder().build();
 		com.sd.grpc.TransportadoraOuterClass.Empty transportadoraEmpty = com.sd.grpc.TransportadoraOuterClass.Empty
 				.newBuilder().build();
+
+
 
 		String[] splittedMessage = text.split(" ");
 
@@ -126,6 +136,29 @@ public class ControllerImpl implements Controller {
 			} catch (Exception e) {
 				return 400;
 			}
+		case "price":
+			try {
+				StringBuilder result = new StringBuilder();
+				Long cep = Long.parseLong(splittedMessage[1]);
+				Double peso = Double.parseDouble(splittedMessage[2]);
+				Iterator<PrecoReturn> response = pricingStub.defPricing(PrecoRequest.newBuilder().setCep(cep).setPeso(peso).build());
+
+				while (response.hasNext()) {
+					PrecoReturn item = response.next();
+					result.setLength(0);
+					result.append("Transportadora "+ item.getTransportadora() +"\n"+
+							      "Valor: "+ item.getPrice() + "\n"+
+							      "Mensagem: "+ item.getResponsemessage() +"\n"+
+								  "HTTP-CODE "+ item.getResponseCode() +"\n");
+					System.out.println(result);
+				}
+				return 200;
+
+
+			} catch (Exception e) {
+				return 400;
+			}
+
 		default:
 			return 400;
 		}
