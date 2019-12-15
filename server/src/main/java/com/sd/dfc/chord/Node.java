@@ -13,6 +13,7 @@ public class Node {
 	private HashMap<Integer, Integer> fingerId;
 	public static int hole_size;
 	public static int ring_size;
+	public static int qtd_nodes;
 
 	private Listener listener;
 
@@ -23,16 +24,17 @@ public class Node {
 
 		localAddress = address;
 
-		ring_size = (int) Math.pow(2, qtd_nodes);
+		Node.ring_size = (int) Math.pow(2, qtd_nodes);
+		Node.qtd_nodes = qtd_nodes;
 
 		// initialize an empty finger table
 		fingerAddress = new HashMap<>();
 		fingerId = new HashMap<>();
 
 		// espaço entre nós no anel
-		hole_size = ring_size / qtd_nodes;
+		Node.hole_size = ring_size / qtd_nodes;
 
-		localId = node_id * hole_size;
+		Node.localId = node_id * hole_size;
 
 		for (int i = 0; i < ring_size; i++) {
 			if (i >= localId && i < localId + hole_size) {
@@ -125,8 +127,8 @@ public class Node {
 		}
 		//se o nó é o nó de maior id no chord, ele fica responsável pelos nós no final do anel
 		//TODO: CORRIGIR STATEMENT
-		if(id == 6) {
-			for(int i = ring_size; i>=id; i--) {
+		if(id == (qtd_nodes * hole_size) - hole_size) {
+			for(int i = ring_size-1; i>=id; i--) {
 				updateIthFingerAddress(i, address);
 			}
 		}
@@ -164,7 +166,7 @@ public class Node {
 
 		// se nao há candidato na finger table, mandar para o maior possível:
 		if(response==null) {
-			response = Helper.sendRequest(fingerAddress.get(fingerId.get(fingerId.size())),
+			response = Helper.sendRequest(fingerAddress.get(fingerId.get(fingerId.size()-1)),
 					queryType + "_" + Helper.toString(splittedMessage));
 		}
 		if(response.startsWith("CREATESUCC_")) {

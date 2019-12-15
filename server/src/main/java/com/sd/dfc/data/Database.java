@@ -35,7 +35,7 @@ public class Database extends ArchiveManipulator implements Serializable {
 	// insere o vetor de bytes e retorna o id mapeado para o mesmo
 	public long create(byte[] value) {
 		map.put(BigInteger.valueOf(count.get()), value);
-		return count.incrementAndGet();
+		return count.getAndIncrement();
 	}
 
 	public byte[] read(BigInteger id) {
@@ -102,7 +102,7 @@ public class Database extends ArchiveManipulator implements Serializable {
 			readFile.close();
 
 		} catch (Exception e) {
-			System.err.println("Não há buffer de comandos em "+ fileName + "para ser lido.");
+			System.err.println("Não há buffer de comandos em "+ fileName + " para ser lido.");
 		}
 	}
 

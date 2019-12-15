@@ -33,7 +33,7 @@ public class TransportadoraService extends transportadoraImplBase {
 
 		byte[] abrangencia = GRPCServer.cepDatabase.read(new BigInteger(String.valueOf(idAbrangencia)));
 
-		if (nome.length() == 0 || idAbrangencia == 0 || peso == 0.0 || abrangencia == null) {
+		if (nome.length() == 0 || peso == 0.0 || abrangencia == null) {
 			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 			response.setResponseCode(400).setResponsemessage("Bad Request");
 			responseObserver.onNext(response.build());
