@@ -1,16 +1,19 @@
 package com.sd.dfc.controller;
 
-import com.sd.dfc.client.SocketClient;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.model.Ceps;
 import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.ServerThread;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.math.BigInteger;
-import java.util.*;
 
 public class DataControllerImpl implements DataController{
     private final String cep = "cep.txt";
@@ -122,13 +125,13 @@ public class DataControllerImpl implements DataController{
         List<String> validCommands;
         validCommands = Arrays.asList(
                 // create
-                SocketClient.INSERT, SocketClient.CREATE, SocketClient.INSERIR,
+                ServerThread.INSERT, ServerThread.CREATE, ServerThread.INSERIR,
                 // read all
-                SocketClient.READ_ALL, SocketClient.LER_TODOS,
+                ServerThread.READ_ALL, ServerThread.LER_TODOS,
                 // update
-                SocketClient.UPDATE, SocketClient.CHANGE, SocketClient.ALTERAR,
+                ServerThread.UPDATE, ServerThread.CHANGE, ServerThread.ALTERAR,
                 // delete
-                SocketClient.DELETE, SocketClient.DELETAR);
+                ServerThread.DELETE, ServerThread.DELETAR);
 
         if (validCommands.stream().anyMatch(str -> str.trim().equals(input.split(" ")[0]))
         ) {
@@ -137,22 +140,22 @@ public class DataControllerImpl implements DataController{
 
             // command has sufficient parameters?
             switch (splittedList.get(0).toLowerCase()) {
-                case SocketClient.INSERT:
-                case SocketClient.CREATE:
-                case SocketClient.INSERIR:
+                case ServerThread.INSERT:
+                case ServerThread.CREATE:
+                case ServerThread.INSERIR:
                     if (splittedList.size() == 5 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
                         //retorna qual database comando atuará
                         return splittedCommand[1];
                     }
-                case SocketClient.READ_ALL:
-                case SocketClient.LER_TODOS:
+                case ServerThread.READ_ALL:
+                case ServerThread.LER_TODOS:
                     if(splittedList.size() == 2 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
                         //retorna qual database comando atuará
                         return splittedCommand[1];
                     }
-                case SocketClient.ALTERAR:
-                case SocketClient.CHANGE:
-                case SocketClient.UPDATE:
+                case ServerThread.ALTERAR:
+                case ServerThread.CHANGE:
+                case ServerThread.UPDATE:
 
                     if (!(splittedList.size() == 4 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
                         return null;
@@ -166,8 +169,8 @@ public class DataControllerImpl implements DataController{
 
                     return splittedCommand[1];
 
-                case SocketClient.DELETE:
-                case SocketClient.DELETAR:
+                case ServerThread.DELETE:
+                case ServerThread.DELETAR:
                     if (!(splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
                         return null;
                     // o segundo parâmetro deve poder ser convertido para float
@@ -193,18 +196,18 @@ public class DataControllerImpl implements DataController{
 
         byte[] response;
         switch (splittedMessage[0]) {
-            case SocketClient.INSERT:
-            case SocketClient.CREATE:
-            case SocketClient.INSERIR:
+            case ServerThread.INSERT:
+            case ServerThread.CREATE:
+            case ServerThread.INSERIR:
                 if(this.insert(splittedMessage)){
                     out.println("Message inserted: " + String.join(" ", splittedMessage));
                 }else{
                     out.println("Fail on insert message");
                 }
                 break;
-            case SocketClient.CHANGE:
-            case SocketClient.ALTERAR:
-            case SocketClient.UPDATE:
+            case ServerThread.CHANGE:
+            case ServerThread.ALTERAR:
+            case ServerThread.UPDATE:
                 response = this.update(splittedMessage);
                 if (response != null) {
                     out.println("Previous message: " + new String(response)+ ". Message updated!");
@@ -212,8 +215,8 @@ public class DataControllerImpl implements DataController{
                     out.println("Fail on update message.");
                 }
                 break;
-            case SocketClient.DELETAR:
-            case SocketClient.DELETE:
+            case ServerThread.DELETAR:
+            case ServerThread.DELETE:
                 response = this.delete(splittedMessage);
                 if (response != null) {
                     out.println("Message removed: " + new String(response));
@@ -221,8 +224,8 @@ public class DataControllerImpl implements DataController{
                     out.println("Fail on removing item.");
                 }
                 break;
-            case SocketClient.READ_ALL:
-            case SocketClient.LER_TODOS:
+            case ServerThread.READ_ALL:
+            case ServerThread.LER_TODOS:
                 String returnedData = this.readAll(splittedMessage);
 
                 // remove the last comma

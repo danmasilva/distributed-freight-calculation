@@ -11,7 +11,17 @@ public class ServerThread {
     private static final int PORT = 12345;
     public static Database2 cepDatabase = null;
     public static Database2 transportadoraDatabase = null;
-
+    
+    public static final String INSERT = "insert";
+    public static final String CREATE = "create";
+    public static final String INSERIR = "inserir";
+    public static final String READ_ALL = "readall";
+    public static final String LER_TODOS = "lertodos";
+    public static final String UPDATE = "update";
+    public static final String CHANGE = "change";
+    public static final String ALTERAR = "alterar";
+    public static final String DELETE = "delete";
+    public static final String DELETAR = "deletar";
 
     public static void main(String[] args) {
         Socket socket = null;

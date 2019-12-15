@@ -41,3 +41,5 @@ fabric.properties
 .idea/**/markdown-navigator/
 /nbproject/
 dfc.iml
+/target\generated-sources\annotations/
+/target\generated-test-sources\test-annotations/
