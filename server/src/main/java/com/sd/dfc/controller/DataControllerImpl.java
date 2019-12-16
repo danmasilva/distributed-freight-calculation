@@ -55,7 +55,7 @@ public class DataControllerImpl implements DataController {
 		StringBuilder result = new StringBuilder();
 
 		map = this.map.readAll();
-		if(splittedMessage[1].equals("cep")){
+		if (splittedMessage[1].equals("cep")) {
 			for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
 				String[] values = new String(entry.getValue()).split(" ");
 				Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()), Long.parseLong(values[0]),
@@ -63,23 +63,18 @@ public class DataControllerImpl implements DataController {
 				result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ")
 						.append(ceps.getCepFim()).append(", ");
 			}
-		} else if(splittedMessage[1].equals("transportadora")){
+		} else if (splittedMessage[1].equals("transportadora")) {
 
-		            for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-		                String[] transportadoraValues = new String(entry.getValue()).split(" ");
+			for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+				String[] transportadoraValues = new String(entry.getValue()).split(" ");
 
-		                Transportadora transportadora = new Transportadora(
-		                        Long.parseLong(entry.getKey().toString()),
-		                        transportadoraValues[0],new Ceps(),
-		                        Double.parseDouble(transportadoraValues[2]));
+				Transportadora transportadora = new Transportadora(Long.parseLong(entry.getKey().toString()),
+						transportadoraValues[0], new Ceps(), Double.parseDouble(transportadoraValues[2]));
 
-		                result.append(transportadora.getId())
-		                        .append(": ")
-		                        .append(transportadora.getNome())
-		                        .append(", peso ").append(transportadora.getPeso()).append(" e abrangência de id ")
-		                        .append(transportadoraValues[1])
-		                        .append(", ");
-		            }
+				result.append(transportadora.getId()).append(": ").append(transportadora.getNome()).append(", peso ")
+						.append(transportadora.getPeso()).append(" e abrangência de id ")
+						.append(transportadoraValues[1]).append(", ");
+			}
 		}
 		return result.toString();
 	}
@@ -88,9 +83,16 @@ public class DataControllerImpl implements DataController {
 	public byte[] update(String[] splittedMessage) throws IOException {
 		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
-		archive.write(String.join(" ", splittedList));
-		return this.map.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
-				String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
+		if (splittedMessage[1].equals("cep")) {
+			archive.write(String.join(" ", splittedList));
+			return this.map.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+					String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
+		} else if (splittedMessage[1].equals("transportadora")) {
+			archive.write(String.join(" ", splittedList));
+			return this.map.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+					String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
+		}
+		return null;
 	}
 
 	@Override
@@ -138,8 +140,7 @@ public class DataControllerImpl implements DataController {
 			case ServerThread.CHANGE:
 			case ServerThread.UPDATE:
 
-				if (!(splittedList.size() == 5
-						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))))
+				if (!((splittedList.size() == 5 && (splittedCommand[1].equals("cep")) || (splittedList.size() == 6 && splittedCommand[1].equals("transportadora")))))
 					return null;
 
 				// o segundo parâmetro deve poder ser convertido para float
