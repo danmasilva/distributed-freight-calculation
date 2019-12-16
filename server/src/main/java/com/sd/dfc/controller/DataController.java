@@ -19,6 +19,6 @@ public interface DataController {
     //verifica se é um comando válido. se for, retorna em qual base deve atuar.
     String validCommand(String input);
 
-    //verifica o que o comando deseja fazer, em qual banco deseja, e o faz.
-    boolean putData(PrintWriter out, String data) throws IOException;
+    //verifica o que o comando deseja fazer, em qual banco deseja, o faz, e retorna a resposta do chamado.
+    String putData(String data) throws IOException;
 }

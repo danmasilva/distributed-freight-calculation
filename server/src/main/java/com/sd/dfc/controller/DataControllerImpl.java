@@ -1,248 +1,212 @@
 package com.sd.dfc.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
+import com.sd.dfc.data.Database2;
 import com.sd.dfc.model.Ceps;
-import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.ServerThread;
 
-public class DataControllerImpl implements DataController{
-    private final String cep = "cep.txt";
-    private final String transportadora = "transportadora.txt";
+public class DataControllerImpl implements DataController {
+	private String name;
 
-    private ArchiveManipulation cepArchive = new ArchiveManipulationImpl(this.cep);
-    private ArchiveManipulation transportadoraArchive = new ArchiveManipulationImpl(this.transportadora);
+	private ArchiveManipulation archive = new ArchiveManipulationImpl(name + ".txt");
 
-    @Override
-    public boolean insert(String[] splittedMessage) throws IOException {
-        List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+	private Database2 map;
 
-        if(splittedList.get(1).equals("cep")){
-            ServerThread.cepDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
-            cepArchive.write(String.join(" ", splittedList));
+	public DataControllerImpl(String name, Map<BigInteger, byte[]> map) {
+		this.name = name;
+		this.map = new Database2(map);
+	}
 
-            return true;
-        }else if (splittedList.get(1).equals("transportadora")){
-            ServerThread.transportadoraDatabase.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
-            transportadoraArchive.write(String.join(" ", splittedList));
-            return true;
-        }
-        return false;
-    }
+	public void updateDatabase(Map<BigInteger, byte[]> map) {
+		this.map = new Database2(map);
+	}
 
-    @Override
-    public String readAll(String[] splittedMessage) {
-        Map<BigInteger, byte[]> map;
-        StringBuilder result = new StringBuilder();
+	@Override
+	public boolean insert(String[] splittedMessage) throws IOException {
+		try {
+			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+			this.map.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+			archive.write(String.join(" ", splittedList));
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-        if(splittedMessage[1].equals("cep")){
-            map = ServerThread.cepDatabase.readAll();
-            for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-                String[] values = new String(entry.getValue()).split(" ");
-                Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()),Long.parseLong(values[0]), Long.parseLong(values[1]));
-                result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ").append(ceps.getCepFim()).append(", ");
-            }
-        }
-        else if(splittedMessage[1].equals("transportadora")){
+	@Override
+	public String readAll(String[] splittedMessage) {
+		Map<BigInteger, byte[]> map;
+		StringBuilder result = new StringBuilder();
 
-            map = ServerThread.transportadoraDatabase.readAll();
-            for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-                String[] transportadoraValues = new String(entry.getValue()).split(" ");
-                String[] cepValues = new String(
-                        ServerThread.cepDatabase.read(
-                                BigInteger.valueOf(
-                                        Long.parseLong(transportadoraValues[1]))))
-                        .split(" ");
+		map = this.map.readAll();
+		for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+			String[] values = new String(entry.getValue()).split(" ");
+			Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()), Long.parseLong(values[0]),
+					Long.parseLong(values[1]));
+			result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ")
+					.append(ceps.getCepFim()).append(", ");
+		}
+		return result.toString();
+	}
 
-                Ceps ceps = new Ceps();
-                ceps.setId(Long.parseLong(transportadoraValues[1]));
-                ceps.setCepInicio(Long.parseLong(cepValues[0]));
-                ceps.setCepFim(Long.parseLong(cepValues[1]));
+	@Override
+	public byte[] update(String[] splittedMessage) throws IOException {
+		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 
+		archive.write(String.join(" ", splittedList));
+		return this.map.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+				String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
+	}
 
-                Transportadora transportadora = new Transportadora(
-                        Long.parseLong(entry.getKey().toString()),
-                        transportadoraValues[0],ceps,
-                        Double.parseDouble(transportadoraValues[2]));
+	@Override
+	public byte[] delete(String[] splittedMessage) throws IOException {
+		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+		archive.write(String.join(" ", splittedList));
+		return this.map.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+	}
 
+	@Override
+	public String validCommand(String input) {
+		List<String> validCommands;
+		validCommands = Arrays.asList(
+				// create
+				ServerThread.INSERT, ServerThread.CREATE, ServerThread.INSERIR,
+				// read all
+				ServerThread.READ_ALL, ServerThread.LER_TODOS,
+				// update
+				ServerThread.UPDATE, ServerThread.CHANGE, ServerThread.ALTERAR,
+				// delete
+				ServerThread.DELETE, ServerThread.DELETAR);
 
-                result.append(transportadora.getId())
-                        .append(": ")
-                        .append(transportadora.getNome())
-                        .append(", peso ").append(transportadora.getPeso()).append(" e abrangência de ")
-                        .append(transportadora.getAbrangencia().getCepInicio()).append(" a ")
-                        .append(transportadora.getAbrangencia().getCepFim()).append(", ");
-                //result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ").append(ceps.getCepFim()).append(", ");
-            }
-        }else{
-            map = new HashMap<>();
-        }
+		if (validCommands.stream().anyMatch(str -> str.trim().equals(input.split(" ")[0]))) {
+			String[] splittedCommand = input.split(" ");
+			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedCommand));
 
+			// command has sufficient parameters?
+			switch (splittedList.get(0).toLowerCase()) {
+			case ServerThread.INSERT:
+			case ServerThread.CREATE:
+			case ServerThread.INSERIR:
+				if (splittedList.size() == 5
+						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))) {
+					// retorna qual database comando atuará
+					return splittedCommand[1];
+				}
+			case ServerThread.READ_ALL:
+			case ServerThread.LER_TODOS:
+				if (splittedList.size() == 2
+						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))) {
+					// retorna qual database comando atuará
+					return splittedCommand[1];
+				}
+			case ServerThread.ALTERAR:
+			case ServerThread.CHANGE:
+			case ServerThread.UPDATE:
 
-        return result.toString();
-    }
+				if (!(splittedList.size() == 4
+						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))))
+					return null;
 
-    @Override
-    public byte[] update(String[] splittedMessage) throws IOException {
-        List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
+				// o segundo parâmetro deve poder ser convertido para float
+				try {
+					Long.parseLong(splittedCommand[2]);
+				} catch (Exception e) {
+					return null;
+				}
 
-        if(splittedMessage[1].equals("cep")){
-            cepArchive.write(String.join(" ", splittedList));
-            return ServerThread.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
-                    String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
-        }else if (splittedMessage[1].equals("transportadora")){
-            transportadoraArchive.write(String.join(" ", splittedList));
-            return ServerThread.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
-                    String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
-        }
-        return null;
-    }
+				return splittedCommand[1];
 
-    @Override
-    public byte[] delete(String[] splittedMessage) throws IOException {
-        List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-        if(splittedMessage[1].equals("cep")){
-            cepArchive.write(String.join(" ", splittedList));
-            return ServerThread.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
-        }else if (splittedMessage[1].equals("transportadora")){
-            transportadoraArchive.write(String.join(" ", splittedList));
-            return  ServerThread.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
-        }
-        return null;
-    }
+			case ServerThread.DELETE:
+			case ServerThread.DELETAR:
+				if (!(splittedList.size() == 3
+						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))))
+					return null;
+				// o segundo parâmetro deve poder ser convertido para float
+				try {
+					Long.parseLong(splittedCommand[2]);
+				} catch (Exception e) {
+					return null;
+				}
 
-    @Override
-    public String validCommand(String input) {
-        List<String> validCommands;
-        validCommands = Arrays.asList(
-                // create
-                ServerThread.INSERT, ServerThread.CREATE, ServerThread.INSERIR,
-                // read all
-                ServerThread.READ_ALL, ServerThread.LER_TODOS,
-                // update
-                ServerThread.UPDATE, ServerThread.CHANGE, ServerThread.ALTERAR,
-                // delete
-                ServerThread.DELETE, ServerThread.DELETAR);
+				return splittedCommand[1];
 
-        if (validCommands.stream().anyMatch(str -> str.trim().equals(input.split(" ")[0]))
-        ) {
-            String[] splittedCommand = input.split(" ");
-            List<String> splittedList = new ArrayList<>(Arrays.asList(splittedCommand));
+			default:
+				return null;
+			}
+		}
+		return null;
+	}
 
-            // command has sufficient parameters?
-            switch (splittedList.get(0).toLowerCase()) {
-                case ServerThread.INSERT:
-                case ServerThread.CREATE:
-                case ServerThread.INSERIR:
-                    if (splittedList.size() == 5 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
-                        //retorna qual database comando atuará
-                        return splittedCommand[1];
-                    }
-                case ServerThread.READ_ALL:
-                case ServerThread.LER_TODOS:
-                    if(splittedList.size() == 2 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))){
-                        //retorna qual database comando atuará
-                        return splittedCommand[1];
-                    }
-                case ServerThread.ALTERAR:
-                case ServerThread.CHANGE:
-                case ServerThread.UPDATE:
+	@Override
+	public String putData(String data){
+		String[] splittedMessage = data.split(" ");
 
-                    if (!(splittedList.size() == 4 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
-                        return null;
+		byte[] response = null;
+		switch (splittedMessage[0]) {
+		case ServerThread.INSERT:
+		case ServerThread.CREATE:
+		case ServerThread.INSERIR:
+			try {
+				if (this.insert(splittedMessage)) {
+					return "Message inserted: " + String.join(" ", splittedMessage);
+				} else {
+					return "Fail on insert message";
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case ServerThread.CHANGE:
+		case ServerThread.ALTERAR:
+		case ServerThread.UPDATE:
+			try {
+				response = this.update(splittedMessage);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (response != null) {
+				return ("Previous message: " + new String(response) + ". Message updated!");
+			} else {
+				return "Fail on update message.";
+			}
+		case ServerThread.DELETAR:
+		case ServerThread.DELETE:
+			try {
+				response = this.delete(splittedMessage);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (response != null) {
+				return ("Message removed: " + new String(response));
+			} else {
+				return "Fail on removing item.";
+			}
+		case ServerThread.READ_ALL:
+		case ServerThread.LER_TODOS:
+			String returnedData = this.readAll(splittedMessage);
 
-                    // o segundo parâmetro deve poder ser convertido para float
-                    try {
-                        Long.parseLong(splittedCommand[2]);
-                    } catch (Exception e) {
-                        return null;
-                    }
-
-                    return splittedCommand[1];
-
-                case ServerThread.DELETE:
-                case ServerThread.DELETAR:
-                    if (!(splittedList.size() == 3 && (splittedCommand[1].equals("cep")||splittedCommand[1].equals("transportadora"))))
-                        return null;
-                    // o segundo parâmetro deve poder ser convertido para float
-                    try {
-                        Long.parseLong(splittedCommand[2]);
-                    } catch (Exception e) {
-                        return null;
-                    }
-
-                    return splittedCommand[1];
-
-                default:
-                    return null;
-            }
-        }
-        return null;
-    }
-
-    //TODO: verificar se o out(printwriter) funciona sendo recebido como argumento. senao, voltar para o echothread
-    @Override
-    public boolean putData(PrintWriter out, String data) throws IOException {
-        String[] splittedMessage = data.split(" ");
-
-        byte[] response;
-        switch (splittedMessage[0]) {
-            case ServerThread.INSERT:
-            case ServerThread.CREATE:
-            case ServerThread.INSERIR:
-                if(this.insert(splittedMessage)){
-                    out.println("Message inserted: " + String.join(" ", splittedMessage));
-                }else{
-                    out.println("Fail on insert message");
-                }
-                break;
-            case ServerThread.CHANGE:
-            case ServerThread.ALTERAR:
-            case ServerThread.UPDATE:
-                response = this.update(splittedMessage);
-                if (response != null) {
-                    out.println("Previous message: " + new String(response)+ ". Message updated!");
-                } else {
-                    out.println("Fail on update message.");
-                }
-                break;
-            case ServerThread.DELETAR:
-            case ServerThread.DELETE:
-                response = this.delete(splittedMessage);
-                if (response != null) {
-                    out.println("Message removed: " + new String(response));
-                } else {
-                    out.println("Fail on removing item.");
-                }
-                break;
-            case ServerThread.READ_ALL:
-            case ServerThread.LER_TODOS:
-                String returnedData = this.readAll(splittedMessage);
-
-                // remove the last comma
-                if (returnedData.length() != 0) {
-                    out.println(returnedData.substring(0, returnedData.length()-2));
-                } else
-                {
-                    out.println("Database vazio");
-                }
-
-                break;
-
-            default:
-                break;
-        }
-        return true;
-    }
-
+			// remove the last comma
+			if (returnedData.length() != 0) {
+				return returnedData.substring(0, returnedData.length() - 2);
+			} else {
+				return "Database vazio";
+			}
+		default:
+			break;
+		}
+		return null;
+	}
 
 }

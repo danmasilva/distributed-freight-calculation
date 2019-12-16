@@ -18,7 +18,8 @@ public class Database2 extends ArchiveManipulationImpl {
         this.recoverData(filename);
     }
 
-    public Database2() {
+    public Database2(Map<BigInteger, byte[]> map) {
+    	this.map = map;
     }
 
     // insere o vetor de bytes e retorna o id mapeado para o mesmo
