@@ -8,24 +8,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+import io.atomix.core.counter.AtomicCounter;
 
 public class Database2 extends ArchiveManipulationImpl {
 
     private Map<BigInteger, byte[]> map = new HashMap<>();
-    private AtomicInteger count = new AtomicInteger();
+    private AtomicCounter count;
 
     public Database2(String filename) {
         this.recoverData(filename);
     }
 
-    public Database2(Map<BigInteger, byte[]> map) {
+    public Database2(AtomicCounter counter, Map<BigInteger, byte[]> map) {
     	this.map = map;
+    	this.count = counter;
+    }
+    
+    public Map<BigInteger, byte[]> getMap(){
+    	return this.map;
     }
 
     // insere o vetor de bytes e retorna o id mapeado para o mesmo
     public long create(byte[] value) {
         map.put(BigInteger.valueOf(count.get()), value);
-        return count.incrementAndGet();
+        return count.getAndAdd(1);
     }
 
     public byte[] read(BigInteger id) {

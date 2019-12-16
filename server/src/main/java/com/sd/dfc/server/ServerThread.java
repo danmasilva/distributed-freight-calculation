@@ -11,14 +11,12 @@ import io.atomix.cluster.Node;
 import io.atomix.cluster.discovery.BootstrapDiscoveryProvider;
 import io.atomix.core.Atomix;
 import io.atomix.core.AtomixBuilder;
+import io.atomix.core.counter.AtomicCounter;
 import io.atomix.core.map.DistributedMap;
 import io.atomix.core.profile.ConsensusProfile;
 import io.atomix.utils.net.Address;
 
 public class ServerThread {
-
-	public static DistributedMap<BigInteger, byte[]> cepDatabase = null;
-	public static DistributedMap<BigInteger, byte[]> transportadoraDatabase = null;
 
 	public static final String INSERT = "insert";
 	public static final String CREATE = "create";
@@ -69,15 +67,19 @@ public class ServerThread {
 				break;
 			}
 		});
-
-		cepDatabase = atomix.<BigInteger, byte[]>mapBuilder("cepDatabase")
+		
+		DistributedMap<BigInteger, byte[]> cepDatabase = atomix.<BigInteger, byte[]>mapBuilder("cepDatabase")
 				.withCacheEnabled().build();
 
-		transportadoraDatabase = atomix.<BigInteger, byte[]>mapBuilder("transportadoraDatabase")
+		DistributedMap<BigInteger, byte[]> transportadoraDatabase = atomix.<BigInteger, byte[]>mapBuilder("transportadoraDatabase")
 				.withCacheEnabled().build();
 		
-		DataControllerImpl cepController = new DataControllerImpl("cep", cepDatabase);
-		DataControllerImpl transportadoraController = new DataControllerImpl("transportadora", transportadoraDatabase);
+		//contadores também precisam ser atômicos, para manter estado caso a aplicação caia
+		AtomicCounter cepCounter = atomix.getAtomicCounter("cepCounter");
+		AtomicCounter transportadoraCounter = atomix.getAtomicCounter("transportadoraCounter");
+		
+		DataControllerImpl cepController = new DataControllerImpl("cep", cepDatabase, cepCounter);
+		DataControllerImpl transportadoraController = new DataControllerImpl("transportadora", transportadoraDatabase, transportadoraCounter);
 		
 		System.out.println("Databases ready");
 		
@@ -86,11 +88,11 @@ public class ServerThread {
 			String destiny = cepController.validCommand((String) message);
 			String result = null;
 			if(destiny.equals("cep")) {
-				cepController.updateDatabase(cepDatabase);
 				result = cepController.putData((String) message);
 			} else if(destiny.equals("transportadora")) {
-				transportadoraController.updateDatabase(transportadoraDatabase);
 				result = transportadoraController.putData((String) message);
+			} else {
+				result = "Falhou ao realizar a operação.";
 			}
 			return CompletableFuture.completedFuture(result);
 		});

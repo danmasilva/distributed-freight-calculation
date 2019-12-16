@@ -11,7 +11,10 @@ import com.sd.dfc.data.ArchiveManipulation;
 import com.sd.dfc.data.ArchiveManipulationImpl;
 import com.sd.dfc.data.Database2;
 import com.sd.dfc.model.Ceps;
+import com.sd.dfc.model.Transportadora;
 import com.sd.dfc.server.ServerThread;
+
+import io.atomix.core.counter.AtomicCounter;
 
 public class DataControllerImpl implements DataController {
 	private String name;
@@ -20,13 +23,17 @@ public class DataControllerImpl implements DataController {
 
 	private Database2 map;
 
-	public DataControllerImpl(String name, Map<BigInteger, byte[]> map) {
+	public DataControllerImpl(String name, Map<BigInteger, byte[]> map, AtomicCounter counter) {
 		this.name = name;
-		this.map = new Database2(map);
+		this.map = new Database2(counter, map);
 	}
 
-	public void updateDatabase(Map<BigInteger, byte[]> map) {
-		this.map = new Database2(map);
+	public void setDatabase(AtomicCounter counter, Map<BigInteger, byte[]> map) {
+		this.map = new Database2(counter, map);
+	}
+
+	public Map<BigInteger, byte[]> getDatabase() {
+		return this.map.getMap();
 	}
 
 	@Override
@@ -48,12 +55,31 @@ public class DataControllerImpl implements DataController {
 		StringBuilder result = new StringBuilder();
 
 		map = this.map.readAll();
-		for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
-			String[] values = new String(entry.getValue()).split(" ");
-			Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()), Long.parseLong(values[0]),
-					Long.parseLong(values[1]));
-			result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ")
-					.append(ceps.getCepFim()).append(", ");
+		if(splittedMessage[1].equals("cep")){
+			for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+				String[] values = new String(entry.getValue()).split(" ");
+				Ceps ceps = new Ceps(Long.parseLong(entry.getKey().toString()), Long.parseLong(values[0]),
+						Long.parseLong(values[1]));
+				result.append(ceps.getId()).append(": de ").append(ceps.getCepInicio()).append(" até ")
+						.append(ceps.getCepFim()).append(", ");
+			}
+		} else if(splittedMessage[1].equals("transportadora")){
+
+		            for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+		                String[] transportadoraValues = new String(entry.getValue()).split(" ");
+
+		                Transportadora transportadora = new Transportadora(
+		                        Long.parseLong(entry.getKey().toString()),
+		                        transportadoraValues[0],new Ceps(),
+		                        Double.parseDouble(transportadoraValues[2]));
+
+		                result.append(transportadora.getId())
+		                        .append(": ")
+		                        .append(transportadora.getNome())
+		                        .append(", peso ").append(transportadora.getPeso()).append(" e abrangência de id ")
+		                        .append(transportadoraValues[1])
+		                        .append(", ");
+		            }
 		}
 		return result.toString();
 	}
@@ -96,8 +122,8 @@ public class DataControllerImpl implements DataController {
 			case ServerThread.INSERT:
 			case ServerThread.CREATE:
 			case ServerThread.INSERIR:
-				if (splittedList.size() == 5
-						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))) {
+				if ((splittedList.size() == 4 && (splittedCommand[1].equals("cep"))
+						|| (splittedList.size() == 5 && splittedCommand[1].equals("transportadora")))) {
 					// retorna qual database comando atuará
 					return splittedCommand[1];
 				}
@@ -112,7 +138,7 @@ public class DataControllerImpl implements DataController {
 			case ServerThread.CHANGE:
 			case ServerThread.UPDATE:
 
-				if (!(splittedList.size() == 4
+				if (!(splittedList.size() == 5
 						&& (splittedCommand[1].equals("cep") || splittedCommand[1].equals("transportadora"))))
 					return null;
 
@@ -147,7 +173,7 @@ public class DataControllerImpl implements DataController {
 	}
 
 	@Override
-	public String putData(String data){
+	public String putData(String data) {
 		String[] splittedMessage = data.split(" ");
 
 		byte[] response = null;
