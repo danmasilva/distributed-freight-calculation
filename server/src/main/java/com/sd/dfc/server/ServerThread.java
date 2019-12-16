@@ -29,14 +29,22 @@ public class ServerThread {
 	public static final String DELETE = "delete";
 	public static final String DELETAR = "deletar";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ExitException {
+		
+		if(args.length < 3) {
+			throw new ExitException("Devem ser informados parâmetros de entrada!");
+		}
 
 		int myId = Integer.parseInt(args[0]);
 		List<Address> addresses = new LinkedList<>();
 
-		for (int i = 1; i < args.length; i += 2) {
-			Address address = new Address(args[i], Integer.parseInt(args[i + 1]));
-			addresses.add(address);
+		try {
+			for (int i = 1; i < args.length; i += 2) {
+				Address address = new Address(args[i], Integer.parseInt(args[i + 1]));
+				addresses.add(address);
+			}			
+		} catch (Exception e) {
+			throw new ExitException("Falha ao processar argumentos de entrada!");
 		}
 
 		AtomixBuilder builder = Atomix.builder();
