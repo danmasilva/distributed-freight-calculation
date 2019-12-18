@@ -81,7 +81,7 @@ public class Node {
 				InetSocketAddress address = new InetSocketAddress(ip, port);
 				updateIthFingerAddress(id, address);
 			}
-			
+
 		}
 
 		// envia para todos os threads conhecidos a nova finger.
@@ -127,8 +127,8 @@ public class Node {
 		}
 		//se o nó é o nó de maior id no chord, ele fica responsável pelos nós no final do anel
 		//TODO: CORRIGIR STATEMENT
-		if(id == (qtd_nodes * hole_size) - hole_size) {
-			for(int i = ring_size-1; i>=id; i--) {
+		if (id == (qtd_nodes * hole_size) - hole_size) {
+			for (int i = ring_size - 1; i >= id; i--) {
 				updateIthFingerAddress(i, address);
 			}
 		}
@@ -153,8 +153,8 @@ public class Node {
 
 	// métodos para lidar com requisições de dados
 	public String sendInsertQuery(int hashValue, String[] splittedMessage) {
-		String queryType = (splittedMessage[0]+splittedMessage[1]).toUpperCase();
-		String response=null;
+		String queryType = (splittedMessage[0] + splittedMessage[1]).toUpperCase();
+		String response = null;
 		for (int i = 0; i < fingerId.size(); i++) {
 			int value = fingerId.get(i);
 			if (hashValue >= value && hashValue < value + hole_size) {
@@ -165,19 +165,19 @@ public class Node {
 		}
 
 		// se nao há candidato na finger table, mandar para o maior possível:
-		if(response==null) {
-			response = Helper.sendRequest(fingerAddress.get(fingerId.get(fingerId.size()-1)),
+		if (response == null) {
+			response = Helper.sendRequest(fingerAddress.get(fingerId.get(fingerId.size() - 1)),
 					queryType + "_" + Helper.toString(splittedMessage));
 		}
-		if(response.startsWith("CREATESUCC_")) {
+		if (response.startsWith("CREATESUCC_")) {
 			return response.split("_")[1];
-		}else
+		} else
 			return null;
 	}
-	
+
 	public byte[] sendUpdateQuery(int hashValue, String[] splittedMessage) {
-		String queryType = (splittedMessage[0]+splittedMessage[1]).toUpperCase();
-		String response=null;
+		String queryType = (splittedMessage[0] + splittedMessage[1]).toUpperCase();
+		String response = null;
 		for (int i = 0; i < fingerId.size(); i++) {
 			int value = fingerId.get(i);
 			if (hashValue >= value && hashValue < value + hole_size) {
@@ -186,16 +186,17 @@ public class Node {
 				break;
 			}
 		}
-		
+
 		// se nao há candidato na finger table, mandar para o maior possível:
-		if(response==null) {
+		if (response == null) {
 			response = Helper.sendRequest(fingerAddress.get(fingerId.get(fingerId.size())),
 					queryType + "_" + Helper.toString(splittedMessage));
 		}
-		if(response.startsWith("CREATESUCC_")) {
+		if (response.startsWith("CREATESUCC_")) {
 			return response.split("_")[1].getBytes();
-		}else 
+		} else
 			return null;
 	}
+
 
 }
