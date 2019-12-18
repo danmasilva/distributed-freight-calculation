@@ -2,25 +2,25 @@ package com.sd.dfc.model;
 
 public class Transportadora {
 
-    private long id;
+    private String id;
     private String nome;
     private Ceps abrangencia;
     private double peso;
 
     public Transportadora(){}
 
-    public Transportadora(long id, String nome, Ceps abrangencia, double peso){
+    public Transportadora(String id, String nome, Ceps abrangencia, double peso){
         this.id = id;
         this.nome = nome;
         this.abrangencia = abrangencia;
         this.peso = peso;
     }
 
-    public long getId(){
+    public String getId(){
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

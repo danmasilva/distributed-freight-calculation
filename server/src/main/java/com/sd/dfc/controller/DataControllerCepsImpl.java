@@ -42,23 +42,23 @@ public class DataControllerCepsImpl implements DataController {
 	}
 
 	@Override
-	public long insert(String[] splittedMessage) throws Exception {
+	public String insert(String[] splittedMessage) throws Exception {
 
-		int hashValue = chordController.hashData(Helper.toString(splittedMessage), Node.ring_size);
+		int hashValue = chordController.hashData(splittedMessage[2], Node.ring_size);
 		if (chordController.responsibleForData(hashValue, Node.localId, Node.hole_size)) {
 
 			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-			long createdId;
+			String key;
 
 			try {
-				createdId = GRPCServer.cepDatabase
-						.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+				key = GRPCServer.cepDatabase
+						.create(splittedList.get(2), String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
 				cepArchive.write(String.join(" ", splittedList));
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new Exception(e);
 			}
-			return createdId;
+			return key;
 		} else {
 			return GRPCServer.m_node.sendInsertQuery(hashValue, splittedMessage);
 		}
@@ -66,13 +66,13 @@ public class DataControllerCepsImpl implements DataController {
 
 	@Override
 	public List<?> readAll(String[] splittedMessage) {
-		Map<BigInteger, byte[]> map;
+		Map<String, byte[]> map;
 		List<Ceps> listCeps = new ArrayList<Ceps>();
 
 		map = GRPCServer.cepDatabase.readAll();
-		for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+		for (Map.Entry<String, byte[]> entry : map.entrySet()) {
 			String[] values = new String(entry.getValue()).split(" ");
-			listCeps.add(new Ceps(Long.parseLong(entry.getKey().toString()), Long.parseLong(values[0]),
+			listCeps.add(new Ceps(entry.getKey(), Long.parseLong(values[0]),
 					Long.parseLong(values[1])));
 		}
 		return listCeps;
@@ -86,7 +86,7 @@ public class DataControllerCepsImpl implements DataController {
 			
 			try {
 				cepArchive.write(String.join(" ", splittedList));
-				return GRPCServer.cepDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+				return GRPCServer.cepDatabase.update(splittedList.get(2),
 						String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -102,7 +102,7 @@ public class DataControllerCepsImpl implements DataController {
 		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 		try {
 			cepArchive.write(String.join(" ", splittedList));
-			return GRPCServer.cepDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+			return GRPCServer.cepDatabase.delete(splittedList.get(2));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception(e);

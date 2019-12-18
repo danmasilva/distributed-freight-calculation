@@ -52,7 +52,7 @@ public class TransportadoraService extends transportadoraImplBase {
 		abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
 
 		try {
-			transportadoraBuilder.setId((int) dataControllerTransportadora.insert(query.toString().split(" ")));
+			transportadoraBuilder.setId( dataControllerTransportadora.insert(query.toString().split(" ")));
 			transportadoraBuilder.setNome(nome);
 			transportadoraBuilder.setPeso(peso);
 			transportadoraBuilder.setAbrangencia(abrangenciaBuilder);
@@ -75,7 +75,7 @@ public class TransportadoraService extends transportadoraImplBase {
 	public void update(UpdateRequest request, StreamObserver<APITransportadoraResponse> responseObserver) {
 		System.out.println("update transportadora request");
 
-		int id = request.getId();
+		String id = request.getId();
 		String nome = request.getTransportadora().getNome();
 		int idAbrangencia = request.getTransportadora().getIdAbrangencia();
 		double peso = request.getTransportadora().getPeso();
@@ -125,7 +125,7 @@ public class TransportadoraService extends transportadoraImplBase {
 	public void delete(DeleteRequest request, StreamObserver<APITransportadoraResponse> responseObserver) {
 		System.out.println("delete transportadora request");
 
-		int id = request.getId();
+		String id = request.getId();
 		String query = "delete transportadora " + id;
 
 		try {
@@ -155,7 +155,7 @@ public class TransportadoraService extends transportadoraImplBase {
 			Ceps abrangencia = t.getAbrangencia();
 			cBuilder.setCepInicio(abrangencia.getCepInicio());
 			cBuilder.setCepFim(abrangencia.getCepFim());
-			tBuilder.setId((int) t.getId());
+			tBuilder.setId( t.getId());
 			tBuilder.setAbrangencia(cBuilder);
 			tBuilder.setNome(t.getNome());
 

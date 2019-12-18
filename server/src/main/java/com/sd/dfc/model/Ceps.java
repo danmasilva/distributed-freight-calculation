@@ -5,7 +5,7 @@ public class Ceps {
 
     public Ceps(){}
 
-    public Ceps(long id, long cepInicio, long cepFim){
+    public Ceps(String id, long cepInicio, long cepFim){
         this.id = id;
         this.cepInicio = cepInicio;
         this.cepFim = cepFim;
@@ -17,15 +17,15 @@ public class Ceps {
         this.cepFim = ceps.cepFim;
     }
 
-    private long id;
+    private String id;
     private long cepInicio;
     private long cepFim;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

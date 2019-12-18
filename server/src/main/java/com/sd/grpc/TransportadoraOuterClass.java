@@ -1239,9 +1239,14 @@ public final class TransportadoraOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string id = 1;</code>
      */
-    int getId();
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
 
     /**
      * <code>string nome = 2;</code>
@@ -1284,7 +1289,7 @@ public final class TransportadoraOuterClass {
       super(builder);
     }
     private TransportadoraResponse() {
-      id_ = 0;
+      id_ = "";
       nome_ = "";
       peso_ = 0D;
     }
@@ -1313,9 +1318,10 @@ public final class TransportadoraOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readInt32();
+              id_ = s;
               break;
             }
             case 18: {
@@ -1375,12 +1381,37 @@ public final class TransportadoraOuterClass {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    private volatile java.lang.Object id_;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string id = 1;</code>
      */
-    public int getId() {
-      return id_;
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int NOME_FIELD_NUMBER = 2;
@@ -1461,8 +1492,8 @@ public final class TransportadoraOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       if (!getNomeBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, nome_);
@@ -1482,9 +1513,8 @@ public final class TransportadoraOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       if (!getNomeBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, nome_);
@@ -1513,8 +1543,8 @@ public final class TransportadoraOuterClass {
       com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse other = (com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse) obj;
 
       boolean result = true;
-      result = result && (getId()
-          == other.getId());
+      result = result && getId()
+          .equals(other.getId());
       result = result && getNome()
           .equals(other.getNome());
       result = result && (hasAbrangencia() == other.hasAbrangencia());
@@ -1538,7 +1568,7 @@ public final class TransportadoraOuterClass {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (53 * hash) + getId().hashCode();
       hash = (37 * hash) + NOME_FIELD_NUMBER;
       hash = (53 * hash) + getNome().hashCode();
       if (hasAbrangencia()) {
@@ -1681,7 +1711,7 @@ public final class TransportadoraOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        id_ = "";
 
         nome_ = "";
 
@@ -1775,8 +1805,9 @@ public final class TransportadoraOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse other) {
         if (other == com.sd.grpc.TransportadoraOuterClass.TransportadoraResponse.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
         }
         if (!other.getNome().isEmpty()) {
           nome_ = other.nome_;
@@ -1817,28 +1848,71 @@ public final class TransportadoraOuterClass {
         return this;
       }
 
-      private int id_ ;
+      private java.lang.Object id_ = "";
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
-      public int getId() {
-        return id_;
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
-      public Builder setId(int value) {
-        
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
       public Builder clearId() {
         
-        id_ = 0;
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
         onChanged();
         return this;
       }
@@ -2719,9 +2793,14 @@ public final class TransportadoraOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string id = 1;</code>
      */
-    int getId();
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
 
     /**
      * <code>.Transportadora transportadora = 2;</code>
@@ -2749,7 +2828,7 @@ public final class TransportadoraOuterClass {
       super(builder);
     }
     private UpdateRequest() {
-      id_ = 0;
+      id_ = "";
     }
 
     @java.lang.Override
@@ -2776,9 +2855,10 @@ public final class TransportadoraOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readInt32();
+              id_ = s;
               break;
             }
             case 18: {
@@ -2827,12 +2907,37 @@ public final class TransportadoraOuterClass {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    private volatile java.lang.Object id_;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string id = 1;</code>
      */
-    public int getId() {
-      return id_;
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int TRANSPORTADORA_FIELD_NUMBER = 2;
@@ -2870,8 +2975,8 @@ public final class TransportadoraOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       if (transportadora_ != null) {
         output.writeMessage(2, getTransportadora());
@@ -2885,9 +2990,8 @@ public final class TransportadoraOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       if (transportadora_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -2909,8 +3013,8 @@ public final class TransportadoraOuterClass {
       com.sd.grpc.TransportadoraOuterClass.UpdateRequest other = (com.sd.grpc.TransportadoraOuterClass.UpdateRequest) obj;
 
       boolean result = true;
-      result = result && (getId()
-          == other.getId());
+      result = result && getId()
+          .equals(other.getId());
       result = result && (hasTransportadora() == other.hasTransportadora());
       if (hasTransportadora()) {
         result = result && getTransportadora()
@@ -2928,7 +3032,7 @@ public final class TransportadoraOuterClass {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (53 * hash) + getId().hashCode();
       if (hasTransportadora()) {
         hash = (37 * hash) + TRANSPORTADORA_FIELD_NUMBER;
         hash = (53 * hash) + getTransportadora().hashCode();
@@ -3066,7 +3170,7 @@ public final class TransportadoraOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        id_ = "";
 
         if (transportadoraBuilder_ == null) {
           transportadora_ = null;
@@ -3154,8 +3258,9 @@ public final class TransportadoraOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.TransportadoraOuterClass.UpdateRequest other) {
         if (other == com.sd.grpc.TransportadoraOuterClass.UpdateRequest.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
         }
         if (other.hasTransportadora()) {
           mergeTransportadora(other.getTransportadora());
@@ -3189,28 +3294,71 @@ public final class TransportadoraOuterClass {
         return this;
       }
 
-      private int id_ ;
+      private java.lang.Object id_ = "";
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
-      public int getId() {
-        return id_;
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
-      public Builder setId(int value) {
-        
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
       public Builder clearId() {
         
-        id_ = 0;
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
         onChanged();
         return this;
       }
@@ -3389,9 +3537,14 @@ public final class TransportadoraOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string id = 1;</code>
      */
-    int getId();
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
   }
   /**
    * Protobuf type {@code DeleteRequest}
@@ -3406,7 +3559,7 @@ public final class TransportadoraOuterClass {
       super(builder);
     }
     private DeleteRequest() {
-      id_ = 0;
+      id_ = "";
     }
 
     @java.lang.Override
@@ -3433,9 +3586,10 @@ public final class TransportadoraOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readInt32();
+              id_ = s;
               break;
             }
             default: {
@@ -3471,12 +3625,37 @@ public final class TransportadoraOuterClass {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    private volatile java.lang.Object id_;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string id = 1;</code>
      */
-    public int getId() {
-      return id_;
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3493,8 +3672,8 @@ public final class TransportadoraOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       unknownFields.writeTo(output);
     }
@@ -3505,9 +3684,8 @@ public final class TransportadoraOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3525,8 +3703,8 @@ public final class TransportadoraOuterClass {
       com.sd.grpc.TransportadoraOuterClass.DeleteRequest other = (com.sd.grpc.TransportadoraOuterClass.DeleteRequest) obj;
 
       boolean result = true;
-      result = result && (getId()
-          == other.getId());
+      result = result && getId()
+          .equals(other.getId());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -3539,7 +3717,7 @@ public final class TransportadoraOuterClass {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (53 * hash) + getId().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3673,7 +3851,7 @@ public final class TransportadoraOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        id_ = "";
 
         return this;
       }
@@ -3750,8 +3928,9 @@ public final class TransportadoraOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.TransportadoraOuterClass.DeleteRequest other) {
         if (other == com.sd.grpc.TransportadoraOuterClass.DeleteRequest.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3782,28 +3961,71 @@ public final class TransportadoraOuterClass {
         return this;
       }
 
-      private int id_ ;
+      private java.lang.Object id_ = "";
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
-      public int getId() {
-        return id_;
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
-      public Builder setId(int value) {
-        
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string id = 1;</code>
        */
       public Builder clearId() {
         
-        id_ = 0;
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
         onChanged();
         return this;
       }
@@ -5132,12 +5354,12 @@ public final class TransportadoraOuterClass {
       "io\030\001 \001(\003\022\016\n\006cepFim\030\002 \001(\003\"C\n\016Transportado" +
       "ra\022\014\n\004nome\030\001 \001(\t\022\025\n\ridAbrangencia\030\002 \001(\005\022" +
       "\014\n\004peso\030\003 \001(\001\"[\n\026TransportadoraResponse\022" +
-      "\n\n\002id\030\001 \001(\005\022\014\n\004nome\030\002 \001(\t\022\031\n\013abrangencia" +
+      "\n\n\002id\030\001 \001(\t\022\014\n\004nome\030\002 \001(\t\022\031\n\013abrangencia" +
       "\030\003 \001(\0132\004.Cep\022\014\n\004peso\030\004 \001(\001\"8\n\rCreateRequ" +
       "est\022\'\n\016transportadora\030\001 \001(\0132\017.Transporta" +
-      "dora\"D\n\rUpdateRequest\022\n\n\002id\030\001 \001(\005\022\'\n\016tra" +
+      "dora\"D\n\rUpdateRequest\022\n\n\002id\030\001 \001(\t\022\'\n\016tra" +
       "nsportadora\030\002 \001(\0132\017.Transportadora\"\033\n\rDe" +
-      "leteRequest\022\n\n\002id\030\001 \001(\005\"{\n\031APITransporta" +
+      "leteRequest\022\n\n\002id\030\001 \001(\t\"{\n\031APITransporta" +
       "doraResponse\022\024\n\014responseCode\030\001 \001(\005\022\027\n\017re" +
       "sponsemessage\030\002 \001(\t\022/\n\016transportadora\030\003 " +
       "\001(\0132\027.TransportadoraResponse\"\007\n\005Empty2\340\001" +

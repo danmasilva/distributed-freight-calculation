@@ -152,7 +152,7 @@ public class Node {
 	}
 
 	// métodos para lidar com requisições de dados
-	public long sendInsertQuery(int hashValue, String[] splittedMessage) {
+	public String sendInsertQuery(int hashValue, String[] splittedMessage) {
 		String queryType = (splittedMessage[0]+splittedMessage[1]).toUpperCase();
 		String response=null;
 		for (int i = 0; i < fingerId.size(); i++) {
@@ -170,9 +170,9 @@ public class Node {
 					queryType + "_" + Helper.toString(splittedMessage));
 		}
 		if(response.startsWith("CREATESUCC_")) {
-			return Long.parseLong(response.split("_")[1]);
-		}else 
-			return -1;
+			return response.split("_")[1];
+		}else
+			return null;
 	}
 	
 	public byte[] sendUpdateQuery(int hashValue, String[] splittedMessage) {

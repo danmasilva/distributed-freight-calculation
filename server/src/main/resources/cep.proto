@@ -10,12 +10,13 @@ service cep {
 }
 
 message Cep{
-	int64 cepInicio = 1;
-	int64 cepFim = 2;
+	string chave = 1;
+	int64 cepInicio = 2;
+	int64 cepFim = 3;
 }
 
 message CepResponse{
-	int64 id = 1;
+	string chave = 1;
 	int64 cepInicio = 2;
 	int64 cepFim = 3;
 }
@@ -25,12 +26,11 @@ message CreateRequest{
 }
 
 message UpdateRequest{
-	int32 id = 1;
 	Cep cep = 2;
 }
 
 message DeleteRequest{
-	int32 id = 1;
+	string chave = 1;
 }
 
 message APICepResponse{

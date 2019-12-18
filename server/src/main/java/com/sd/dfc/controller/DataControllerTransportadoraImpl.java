@@ -39,18 +39,18 @@ public class DataControllerTransportadoraImpl implements DataController {
 	}
 
 	@Override
-	public long insert(String[] splittedMessage) throws IOException {
+	public String insert(String[] splittedMessage) throws IOException {
 		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
-		long createdId;
+		String createdId;
 
 		try {
 			createdId = GRPCServer.transportadoraDatabase
-					.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+					.create(splittedList.get(2), String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
 			transportadoraArchive.write(String.join(" ", splittedList));
 		} catch (Exception e) {
 			System.err.println("Ocorreu algum erro na base de dados.");
 			e.printStackTrace();
-			return -1;
+			return null;
 		}
 		return createdId;
 	}
@@ -61,7 +61,7 @@ public class DataControllerTransportadoraImpl implements DataController {
 
 		try {
 			transportadoraArchive.write(String.join(" ", splittedList));
-			return GRPCServer.transportadoraDatabase.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+			return GRPCServer.transportadoraDatabase.update(splittedList.get(2),
 					String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
 		} catch (Exception e) {
 			System.err.println("Ocorreu algum erro na base de dados.");
@@ -72,23 +72,23 @@ public class DataControllerTransportadoraImpl implements DataController {
 
 	@Override
 	public List<?> readAll(String[] splittedMessage) {
-		Map<BigInteger, byte[]> map;
+		Map<String, byte[]> map;
 		List<Transportadora> listTransportadoras = new ArrayList<>();
 
 		map = GRPCServer.transportadoraDatabase.readAll();
 
-		for (Map.Entry<BigInteger, byte[]> entry : map.entrySet()) {
+		for (Map.Entry<String, byte[]> entry : map.entrySet()) {
 			String[] transportadoraValues = new String(entry.getValue()).split(" ");
 			String[] cepValues = new String(
 					GRPCServer.cepDatabase.read(BigInteger.valueOf(Long.parseLong(transportadoraValues[1]))))
 							.split(" ");
 
 			Ceps ceps = new Ceps();
-			ceps.setId(Long.parseLong(transportadoraValues[1]));
+			ceps.setId(transportadoraValues[1]);
 			ceps.setCepInicio(Long.parseLong(cepValues[0]));
 			ceps.setCepFim(Long.parseLong(cepValues[1]));
 
-			Transportadora transportadora = new Transportadora(Long.parseLong(entry.getKey().toString()),
+			Transportadora transportadora = new Transportadora(entry.getKey(),
 					transportadoraValues[0], ceps, Double.parseDouble(transportadoraValues[2]));
 
 			listTransportadoras.add(transportadora);
@@ -101,7 +101,7 @@ public class DataControllerTransportadoraImpl implements DataController {
 		List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 		try {
 			transportadoraArchive.write(String.join(" ", splittedList));
-			return GRPCServer.transportadoraDatabase.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+			return GRPCServer.transportadoraDatabase.delete(splittedList.get(2));
 		} catch (Exception e) {
 			System.err.println("Ocorreu algum erro na base de dados.");
 			e.printStackTrace();

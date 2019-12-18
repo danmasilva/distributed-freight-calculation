@@ -16,7 +16,7 @@ public class ChordControllerImpl implements ChordController{
 			e.printStackTrace();
 			return -1;
 		}
-		return Math.abs(hash) % ring_size;
+		return  Math.abs(hash)% ring_size;
 	}
 
 	@Override

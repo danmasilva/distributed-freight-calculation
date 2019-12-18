@@ -19,12 +19,22 @@ public final class CepOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 cepInicio = 1;</code>
+     * <code>string chave = 1;</code>
+     */
+    java.lang.String getChave();
+    /**
+     * <code>string chave = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getChaveBytes();
+
+    /**
+     * <code>int64 cepInicio = 2;</code>
      */
     long getCepInicio();
 
     /**
-     * <code>int64 cepFim = 2;</code>
+     * <code>int64 cepFim = 3;</code>
      */
     long getCepFim();
   }
@@ -41,6 +51,7 @@ public final class CepOuterClass {
       super(builder);
     }
     private Cep() {
+      chave_ = "";
       cepInicio_ = 0L;
       cepFim_ = 0L;
     }
@@ -69,12 +80,18 @@ public final class CepOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              chave_ = s;
+              break;
+            }
+            case 16: {
 
               cepInicio_ = input.readInt64();
               break;
             }
-            case 16: {
+            case 24: {
 
               cepFim_ = input.readInt64();
               break;
@@ -111,19 +128,53 @@ public final class CepOuterClass {
               com.sd.grpc.CepOuterClass.Cep.class, com.sd.grpc.CepOuterClass.Cep.Builder.class);
     }
 
-    public static final int CEPINICIO_FIELD_NUMBER = 1;
+    public static final int CHAVE_FIELD_NUMBER = 1;
+    private volatile java.lang.Object chave_;
+    /**
+     * <code>string chave = 1;</code>
+     */
+    public java.lang.String getChave() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chave_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chave = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChaveBytes() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chave_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CEPINICIO_FIELD_NUMBER = 2;
     private long cepInicio_;
     /**
-     * <code>int64 cepInicio = 1;</code>
+     * <code>int64 cepInicio = 2;</code>
      */
     public long getCepInicio() {
       return cepInicio_;
     }
 
-    public static final int CEPFIM_FIELD_NUMBER = 2;
+    public static final int CEPFIM_FIELD_NUMBER = 3;
     private long cepFim_;
     /**
-     * <code>int64 cepFim = 2;</code>
+     * <code>int64 cepFim = 3;</code>
      */
     public long getCepFim() {
       return cepFim_;
@@ -143,11 +194,14 @@ public final class CepOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (!getChaveBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, chave_);
+      }
       if (cepInicio_ != 0L) {
-        output.writeInt64(1, cepInicio_);
+        output.writeInt64(2, cepInicio_);
       }
       if (cepFim_ != 0L) {
-        output.writeInt64(2, cepFim_);
+        output.writeInt64(3, cepFim_);
       }
       unknownFields.writeTo(output);
     }
@@ -158,13 +212,16 @@ public final class CepOuterClass {
       if (size != -1) return size;
 
       size = 0;
+      if (!getChaveBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, chave_);
+      }
       if (cepInicio_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, cepInicio_);
+          .computeInt64Size(2, cepInicio_);
       }
       if (cepFim_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, cepFim_);
+          .computeInt64Size(3, cepFim_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -182,6 +239,8 @@ public final class CepOuterClass {
       com.sd.grpc.CepOuterClass.Cep other = (com.sd.grpc.CepOuterClass.Cep) obj;
 
       boolean result = true;
+      result = result && getChave()
+          .equals(other.getChave());
       result = result && (getCepInicio()
           == other.getCepInicio());
       result = result && (getCepFim()
@@ -197,6 +256,8 @@ public final class CepOuterClass {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CHAVE_FIELD_NUMBER;
+      hash = (53 * hash) + getChave().hashCode();
       hash = (37 * hash) + CEPINICIO_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCepInicio());
@@ -336,6 +397,8 @@ public final class CepOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        chave_ = "";
+
         cepInicio_ = 0L;
 
         cepFim_ = 0L;
@@ -366,6 +429,7 @@ public final class CepOuterClass {
       @java.lang.Override
       public com.sd.grpc.CepOuterClass.Cep buildPartial() {
         com.sd.grpc.CepOuterClass.Cep result = new com.sd.grpc.CepOuterClass.Cep(this);
+        result.chave_ = chave_;
         result.cepInicio_ = cepInicio_;
         result.cepFim_ = cepFim_;
         onBuilt();
@@ -416,6 +480,10 @@ public final class CepOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.CepOuterClass.Cep other) {
         if (other == com.sd.grpc.CepOuterClass.Cep.getDefaultInstance()) return this;
+        if (!other.getChave().isEmpty()) {
+          chave_ = other.chave_;
+          onChanged();
+        }
         if (other.getCepInicio() != 0L) {
           setCepInicio(other.getCepInicio());
         }
@@ -451,15 +519,84 @@ public final class CepOuterClass {
         return this;
       }
 
+      private java.lang.Object chave_ = "";
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public java.lang.String getChave() {
+        java.lang.Object ref = chave_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chave_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChaveBytes() {
+        java.lang.Object ref = chave_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chave_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChave(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        chave_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder clearChave() {
+        
+        chave_ = getDefaultInstance().getChave();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChaveBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        chave_ = value;
+        onChanged();
+        return this;
+      }
+
       private long cepInicio_ ;
       /**
-       * <code>int64 cepInicio = 1;</code>
+       * <code>int64 cepInicio = 2;</code>
        */
       public long getCepInicio() {
         return cepInicio_;
       }
       /**
-       * <code>int64 cepInicio = 1;</code>
+       * <code>int64 cepInicio = 2;</code>
        */
       public Builder setCepInicio(long value) {
         
@@ -468,7 +605,7 @@ public final class CepOuterClass {
         return this;
       }
       /**
-       * <code>int64 cepInicio = 1;</code>
+       * <code>int64 cepInicio = 2;</code>
        */
       public Builder clearCepInicio() {
         
@@ -479,13 +616,13 @@ public final class CepOuterClass {
 
       private long cepFim_ ;
       /**
-       * <code>int64 cepFim = 2;</code>
+       * <code>int64 cepFim = 3;</code>
        */
       public long getCepFim() {
         return cepFim_;
       }
       /**
-       * <code>int64 cepFim = 2;</code>
+       * <code>int64 cepFim = 3;</code>
        */
       public Builder setCepFim(long value) {
         
@@ -494,7 +631,7 @@ public final class CepOuterClass {
         return this;
       }
       /**
-       * <code>int64 cepFim = 2;</code>
+       * <code>int64 cepFim = 3;</code>
        */
       public Builder clearCepFim() {
         
@@ -560,9 +697,14 @@ public final class CepOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 id = 1;</code>
+     * <code>string chave = 1;</code>
      */
-    long getId();
+    java.lang.String getChave();
+    /**
+     * <code>string chave = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getChaveBytes();
 
     /**
      * <code>int64 cepInicio = 2;</code>
@@ -587,7 +729,7 @@ public final class CepOuterClass {
       super(builder);
     }
     private CepResponse() {
-      id_ = 0L;
+      chave_ = "";
       cepInicio_ = 0L;
       cepFim_ = 0L;
     }
@@ -616,9 +758,10 @@ public final class CepOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readInt64();
+              chave_ = s;
               break;
             }
             case 16: {
@@ -663,13 +806,38 @@ public final class CepOuterClass {
               com.sd.grpc.CepOuterClass.CepResponse.class, com.sd.grpc.CepOuterClass.CepResponse.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
-    private long id_;
+    public static final int CHAVE_FIELD_NUMBER = 1;
+    private volatile java.lang.Object chave_;
     /**
-     * <code>int64 id = 1;</code>
+     * <code>string chave = 1;</code>
      */
-    public long getId() {
-      return id_;
+    public java.lang.String getChave() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chave_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chave = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChaveBytes() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chave_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CEPINICIO_FIELD_NUMBER = 2;
@@ -704,8 +872,8 @@ public final class CepOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0L) {
-        output.writeInt64(1, id_);
+      if (!getChaveBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, chave_);
       }
       if (cepInicio_ != 0L) {
         output.writeInt64(2, cepInicio_);
@@ -722,9 +890,8 @@ public final class CepOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, id_);
+      if (!getChaveBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, chave_);
       }
       if (cepInicio_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -750,8 +917,8 @@ public final class CepOuterClass {
       com.sd.grpc.CepOuterClass.CepResponse other = (com.sd.grpc.CepOuterClass.CepResponse) obj;
 
       boolean result = true;
-      result = result && (getId()
-          == other.getId());
+      result = result && getChave()
+          .equals(other.getChave());
       result = result && (getCepInicio()
           == other.getCepInicio());
       result = result && (getCepFim()
@@ -767,9 +934,8 @@ public final class CepOuterClass {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getId());
+      hash = (37 * hash) + CHAVE_FIELD_NUMBER;
+      hash = (53 * hash) + getChave().hashCode();
       hash = (37 * hash) + CEPINICIO_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCepInicio());
@@ -909,7 +1075,7 @@ public final class CepOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0L;
+        chave_ = "";
 
         cepInicio_ = 0L;
 
@@ -941,7 +1107,7 @@ public final class CepOuterClass {
       @java.lang.Override
       public com.sd.grpc.CepOuterClass.CepResponse buildPartial() {
         com.sd.grpc.CepOuterClass.CepResponse result = new com.sd.grpc.CepOuterClass.CepResponse(this);
-        result.id_ = id_;
+        result.chave_ = chave_;
         result.cepInicio_ = cepInicio_;
         result.cepFim_ = cepFim_;
         onBuilt();
@@ -992,8 +1158,9 @@ public final class CepOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.CepOuterClass.CepResponse other) {
         if (other == com.sd.grpc.CepOuterClass.CepResponse.getDefaultInstance()) return this;
-        if (other.getId() != 0L) {
-          setId(other.getId());
+        if (!other.getChave().isEmpty()) {
+          chave_ = other.chave_;
+          onChanged();
         }
         if (other.getCepInicio() != 0L) {
           setCepInicio(other.getCepInicio());
@@ -1030,28 +1197,71 @@ public final class CepOuterClass {
         return this;
       }
 
-      private long id_ ;
+      private java.lang.Object chave_ = "";
       /**
-       * <code>int64 id = 1;</code>
+       * <code>string chave = 1;</code>
        */
-      public long getId() {
-        return id_;
+      public java.lang.String getChave() {
+        java.lang.Object ref = chave_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chave_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int64 id = 1;</code>
+       * <code>string chave = 1;</code>
        */
-      public Builder setId(long value) {
-        
-        id_ = value;
+      public com.google.protobuf.ByteString
+          getChaveBytes() {
+        java.lang.Object ref = chave_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chave_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChave(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        chave_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 id = 1;</code>
+       * <code>string chave = 1;</code>
        */
-      public Builder clearId() {
+      public Builder clearChave() {
         
-        id_ = 0L;
+        chave_ = getDefaultInstance().getChave();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChaveBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        chave_ = value;
         onChanged();
         return this;
       }
@@ -1772,11 +1982,6 @@ public final class CepOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 id = 1;</code>
-     */
-    int getId();
-
-    /**
      * <code>.Cep cep = 2;</code>
      */
     boolean hasCep();
@@ -1802,7 +2007,6 @@ public final class CepOuterClass {
       super(builder);
     }
     private UpdateRequest() {
-      id_ = 0;
     }
 
     @java.lang.Override
@@ -1829,11 +2033,6 @@ public final class CepOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
-
-              id_ = input.readInt32();
-              break;
-            }
             case 18: {
               com.sd.grpc.CepOuterClass.Cep.Builder subBuilder = null;
               if (cep_ != null) {
@@ -1879,15 +2078,6 @@ public final class CepOuterClass {
               com.sd.grpc.CepOuterClass.UpdateRequest.class, com.sd.grpc.CepOuterClass.UpdateRequest.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    /**
-     * <code>int32 id = 1;</code>
-     */
-    public int getId() {
-      return id_;
-    }
-
     public static final int CEP_FIELD_NUMBER = 2;
     private com.sd.grpc.CepOuterClass.Cep cep_;
     /**
@@ -1923,9 +2113,6 @@ public final class CepOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
-      }
       if (cep_ != null) {
         output.writeMessage(2, getCep());
       }
@@ -1938,10 +2125,6 @@ public final class CepOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
-      }
       if (cep_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getCep());
@@ -1962,8 +2145,6 @@ public final class CepOuterClass {
       com.sd.grpc.CepOuterClass.UpdateRequest other = (com.sd.grpc.CepOuterClass.UpdateRequest) obj;
 
       boolean result = true;
-      result = result && (getId()
-          == other.getId());
       result = result && (hasCep() == other.hasCep());
       if (hasCep()) {
         result = result && getCep()
@@ -1980,8 +2161,6 @@ public final class CepOuterClass {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
       if (hasCep()) {
         hash = (37 * hash) + CEP_FIELD_NUMBER;
         hash = (53 * hash) + getCep().hashCode();
@@ -2119,8 +2298,6 @@ public final class CepOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
-
         if (cepBuilder_ == null) {
           cep_ = null;
         } else {
@@ -2153,7 +2330,6 @@ public final class CepOuterClass {
       @java.lang.Override
       public com.sd.grpc.CepOuterClass.UpdateRequest buildPartial() {
         com.sd.grpc.CepOuterClass.UpdateRequest result = new com.sd.grpc.CepOuterClass.UpdateRequest(this);
-        result.id_ = id_;
         if (cepBuilder_ == null) {
           result.cep_ = cep_;
         } else {
@@ -2207,9 +2383,6 @@ public final class CepOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.CepOuterClass.UpdateRequest other) {
         if (other == com.sd.grpc.CepOuterClass.UpdateRequest.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
         if (other.hasCep()) {
           mergeCep(other.getCep());
         }
@@ -2239,32 +2412,6 @@ public final class CepOuterClass {
             mergeFrom(parsedMessage);
           }
         }
-        return this;
-      }
-
-      private int id_ ;
-      /**
-       * <code>int32 id = 1;</code>
-       */
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <code>int32 id = 1;</code>
-       */
-      public Builder setId(int value) {
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 id = 1;</code>
-       */
-      public Builder clearId() {
-        
-        id_ = 0;
-        onChanged();
         return this;
       }
 
@@ -2442,9 +2589,14 @@ public final class CepOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string chave = 1;</code>
      */
-    int getId();
+    java.lang.String getChave();
+    /**
+     * <code>string chave = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getChaveBytes();
   }
   /**
    * Protobuf type {@code DeleteRequest}
@@ -2459,7 +2611,7 @@ public final class CepOuterClass {
       super(builder);
     }
     private DeleteRequest() {
-      id_ = 0;
+      chave_ = "";
     }
 
     @java.lang.Override
@@ -2486,9 +2638,10 @@ public final class CepOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readInt32();
+              chave_ = s;
               break;
             }
             default: {
@@ -2523,13 +2676,38 @@ public final class CepOuterClass {
               com.sd.grpc.CepOuterClass.DeleteRequest.class, com.sd.grpc.CepOuterClass.DeleteRequest.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    public static final int CHAVE_FIELD_NUMBER = 1;
+    private volatile java.lang.Object chave_;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>string chave = 1;</code>
      */
-    public int getId() {
-      return id_;
+    public java.lang.String getChave() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chave_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chave = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChaveBytes() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chave_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2546,8 +2724,8 @@ public final class CepOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (!getChaveBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, chave_);
       }
       unknownFields.writeTo(output);
     }
@@ -2558,9 +2736,8 @@ public final class CepOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+      if (!getChaveBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, chave_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2578,8 +2755,8 @@ public final class CepOuterClass {
       com.sd.grpc.CepOuterClass.DeleteRequest other = (com.sd.grpc.CepOuterClass.DeleteRequest) obj;
 
       boolean result = true;
-      result = result && (getId()
-          == other.getId());
+      result = result && getChave()
+          .equals(other.getChave());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -2591,8 +2768,8 @@ public final class CepOuterClass {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (37 * hash) + CHAVE_FIELD_NUMBER;
+      hash = (53 * hash) + getChave().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2726,7 +2903,7 @@ public final class CepOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        chave_ = "";
 
         return this;
       }
@@ -2754,7 +2931,7 @@ public final class CepOuterClass {
       @java.lang.Override
       public com.sd.grpc.CepOuterClass.DeleteRequest buildPartial() {
         com.sd.grpc.CepOuterClass.DeleteRequest result = new com.sd.grpc.CepOuterClass.DeleteRequest(this);
-        result.id_ = id_;
+        result.chave_ = chave_;
         onBuilt();
         return result;
       }
@@ -2803,8 +2980,9 @@ public final class CepOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.CepOuterClass.DeleteRequest other) {
         if (other == com.sd.grpc.CepOuterClass.DeleteRequest.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (!other.getChave().isEmpty()) {
+          chave_ = other.chave_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2835,28 +3013,71 @@ public final class CepOuterClass {
         return this;
       }
 
-      private int id_ ;
+      private java.lang.Object chave_ = "";
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string chave = 1;</code>
        */
-      public int getId() {
-        return id_;
+      public java.lang.String getChave() {
+        java.lang.Object ref = chave_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chave_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string chave = 1;</code>
        */
-      public Builder setId(int value) {
-        
-        id_ = value;
+      public com.google.protobuf.ByteString
+          getChaveBytes() {
+        java.lang.Object ref = chave_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chave_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChave(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        chave_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 id = 1;</code>
+       * <code>string chave = 1;</code>
        */
-      public Builder clearId() {
+      public Builder clearChave() {
         
-        id_ = 0;
+        chave_ = getDefaultInstance().getChave();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChaveBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        chave_ = value;
         onChanged();
         return this;
       }
@@ -4176,20 +4397,20 @@ public final class CepOuterClass {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tcep.proto\"(\n\003Cep\022\021\n\tcepInicio\030\001 \001(\003\022\016\n" +
-      "\006cepFim\030\002 \001(\003\"<\n\013CepResponse\022\n\n\002id\030\001 \001(\003" +
-      "\022\021\n\tcepInicio\030\002 \001(\003\022\016\n\006cepFim\030\003 \001(\003\"\"\n\rC" +
-      "reateRequest\022\021\n\003cep\030\001 \001(\0132\004.Cep\".\n\rUpdat" +
-      "eRequest\022\n\n\002id\030\001 \001(\005\022\021\n\003cep\030\002 \001(\0132\004.Cep\"" +
-      "\033\n\rDeleteRequest\022\n\n\002id\030\001 \001(\005\"Z\n\016APICepRe" +
-      "sponse\022\024\n\014responseCode\030\001 \001(\005\022\027\n\017response" +
-      "message\030\002 \001(\t\022\031\n\003cep\030\003 \001(\0132\014.CepResponse" +
-      "\"\007\n\005Empty2\251\001\n\003cep\022)\n\006create\022\016.CreateRequ" +
-      "est\032\017.APICepResponse\022)\n\006update\022\016.UpdateR" +
-      "equest\032\017.APICepResponse\022)\n\006delete\022\016.Dele" +
-      "teRequest\032\017.APICepResponse\022!\n\007readall\022\006." +
-      "Empty\032\014.CepResponse0\001B\r\n\013com.sd.grpcb\006pr" +
-      "oto3"
+      "\n\tcep.proto\"7\n\003Cep\022\r\n\005chave\030\001 \001(\t\022\021\n\tcep" +
+      "Inicio\030\002 \001(\003\022\016\n\006cepFim\030\003 \001(\003\"?\n\013CepRespo" +
+      "nse\022\r\n\005chave\030\001 \001(\t\022\021\n\tcepInicio\030\002 \001(\003\022\016\n" +
+      "\006cepFim\030\003 \001(\003\"\"\n\rCreateRequest\022\021\n\003cep\030\001 " +
+      "\001(\0132\004.Cep\"\"\n\rUpdateRequest\022\021\n\003cep\030\002 \001(\0132" +
+      "\004.Cep\"\036\n\rDeleteRequest\022\r\n\005chave\030\001 \001(\t\"Z\n" +
+      "\016APICepResponse\022\024\n\014responseCode\030\001 \001(\005\022\027\n" +
+      "\017responsemessage\030\002 \001(\t\022\031\n\003cep\030\003 \001(\0132\014.Ce" +
+      "pResponse\"\007\n\005Empty2\251\001\n\003cep\022)\n\006create\022\016.C" +
+      "reateRequest\032\017.APICepResponse\022)\n\006update\022" +
+      "\016.UpdateRequest\032\017.APICepResponse\022)\n\006dele" +
+      "te\022\016.DeleteRequest\032\017.APICepResponse\022!\n\007r" +
+      "eadall\022\006.Empty\032\014.CepResponse0\001B\r\n\013com.sd" +
+      ".grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4208,13 +4429,13 @@ public final class CepOuterClass {
     internal_static_Cep_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Cep_descriptor,
-        new java.lang.String[] { "CepInicio", "CepFim", });
+        new java.lang.String[] { "Chave", "CepInicio", "CepFim", });
     internal_static_CepResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_CepResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CepResponse_descriptor,
-        new java.lang.String[] { "Id", "CepInicio", "CepFim", });
+        new java.lang.String[] { "Chave", "CepInicio", "CepFim", });
     internal_static_CreateRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_CreateRequest_fieldAccessorTable = new
@@ -4226,13 +4447,13 @@ public final class CepOuterClass {
     internal_static_UpdateRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_UpdateRequest_descriptor,
-        new java.lang.String[] { "Id", "Cep", });
+        new java.lang.String[] { "Cep", });
     internal_static_DeleteRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_DeleteRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_DeleteRequest_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Chave", });
     internal_static_APICepResponse_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_APICepResponse_fieldAccessorTable = new

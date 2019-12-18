@@ -21,8 +21,9 @@ public class CepService extends cepImplBase {
 	@Override
 	public void create(CreateRequest request, StreamObserver<APICepResponse> responseObserver) {
 		System.out.println("create cep request");
-		long cepInicio = (long) request.getCep().getCepInicio();
-		long cepFim = (long) request.getCep().getCepFim();
+		String cepChave = request.getCep().getChave();
+		long cepInicio = request.getCep().getCepInicio();
+		long cepFim = request.getCep().getCepFim();
 
 		// tratativa de cep inválido/nao informado
 		if (cepInicio == 0 || cepFim == 0) {
@@ -35,13 +36,13 @@ public class CepService extends cepImplBase {
 
 		StringBuilder query = new StringBuilder();
 
-		query.append("create cep ").append(cepInicio).append(" ").append(cepFim);
+		query.append("create cep ").append(cepChave).append(" ").append(cepInicio).append(" ").append(cepFim);
 
 		CepResponse.Builder builder = CepResponse.newBuilder();
 
 		try {
 			// realizando esse tipo de inserção para manter o código legado!!
-			builder.setId((int) dataController.insert(query.toString().split(" ")));
+			builder.setChave(dataController.insert(query.toString().split(" ")));
 			builder.setCepInicio(cepInicio);
 			builder.setCepFim(cepFim);
 		} catch (Exception e) {
@@ -62,7 +63,7 @@ public class CepService extends cepImplBase {
 	public void update(UpdateRequest request, StreamObserver<APICepResponse> responseObserver) {
 		System.out.println("update cep request");
 
-		int id = request.getId();
+		String chave = request.getCep().getChave();
 		long cepInicio = request.getCep().getCepInicio();
 		long cepFim = request.getCep().getCepFim();
 
@@ -77,7 +78,7 @@ public class CepService extends cepImplBase {
 
 		StringBuilder query = new StringBuilder();
 
-		query.append("update cep ").append(id).append(" ").append(cepInicio).append(" ").append(cepFim);
+		query.append("update cep ").append(chave).append(" ").append(cepInicio).append(" ").append(cepFim);
 
 		try {
 			dataController.update(query.toString().split(" "));
@@ -90,7 +91,7 @@ public class CepService extends cepImplBase {
 		}
 
 		CepResponse.Builder builder = CepResponse.newBuilder();
-		builder.setId(id);
+		builder.setChave(chave);
 		builder.setCepInicio(cepInicio);
 		builder.setCepFim(cepFim);
 
@@ -103,11 +104,11 @@ public class CepService extends cepImplBase {
 	@Override
 	public void delete(DeleteRequest request, StreamObserver<APICepResponse> responseObserver) {
 		System.out.println("delete cep request");
-		int id = request.getId();
+		String chave = request.getChave();
 
 		StringBuilder query = new StringBuilder();
 
-		query.append("delete cep ").append(id);
+		query.append("delete cep ").append(chave);
 
 		try {
 			dataController.delete(query.toString().split(" "));
@@ -132,7 +133,7 @@ public class CepService extends cepImplBase {
 		List<Ceps> ceps = (List<Ceps>) dataController.readAll(query.split(" "));
 		for (Ceps cep : ceps) {
 			CepResponse.Builder builder = CepResponse.newBuilder();
-			builder.setId(cep.getId());
+			builder.setChave(cep.getId());
 			builder.setCepInicio(cep.getCepInicio());
 			builder.setCepFim(cep.getCepFim());
 			responseObserver.onNext(builder.build());

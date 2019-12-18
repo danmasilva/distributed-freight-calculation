@@ -2,7 +2,6 @@ package com.sd.dfc.data;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -11,19 +10,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.SerializationUtils;
 
 public class Database extends ArchiveManipulator implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 849942648731843734L;
 
-	private Map<BigInteger, byte[]> map = new HashMap<>();
-	private AtomicInteger count = new AtomicInteger();
+	private final int CEP= 3;
+
+	private final int TRASNSPORTADORA = 2;
+
+	private Map<String, byte[]> map = new HashMap<>();
 
 	public Database(String filename) {
 		this.recoverData(filename);
@@ -33,24 +31,24 @@ public class Database extends ArchiveManipulator implements Serializable {
 	}
 
 	// insere o vetor de bytes e retorna o id mapeado para o mesmo
-	public long create(byte[] value) {
-		map.put(BigInteger.valueOf(count.get()), value);
-		return count.getAndIncrement();
+	public String create(String key, byte[] value) {
+		map.put(key, value);
+		return key;
 	}
 
 	public byte[] read(BigInteger id) {
 		return map.get(id);
 	}
 
-	public Map<BigInteger, byte[]> readAll() {
+	public Map<String, byte[]> readAll() {
 		return map;
 	}
 
-	public byte[] update(BigInteger id, byte[] value) {
+	public byte[] update(String id, byte[] value) {
 		return map.put(id, value);
 	}
 
-	public byte[] delete(BigInteger id) {
+	public byte[] delete(String id) {
 		return map.remove(id);
 	}
 
@@ -70,7 +68,6 @@ public class Database extends ArchiveManipulator implements Serializable {
 			}
 			if(wrapper != null) {
 				this.map = wrapper.map;
-				this.count = wrapper.count;
 			}			
 		}
 		
@@ -86,16 +83,22 @@ public class Database extends ArchiveManipulator implements Serializable {
 				// lista com o comando subtraido do método e do nome do arquivo
 				List<String> splittedList = Arrays.asList(splittedCommand);
 
+
 				switch (splittedCommand[0]) {
 				case "create":
-					this.create(String.join(" ", splittedList.subList(2, splittedList.size())).getBytes());
+					if(splittedCommand[1].equals("cep")) {
+						this.create(splittedCommand[2], String.join(" ", splittedList.subList(CEP, splittedList.size())).getBytes());
+					}  else {
+						this.create(splittedCommand[2], String.join(" ", splittedList.subList(TRASNSPORTADORA, splittedList.size())).getBytes());
+					}
+
 					break;
 				case "update":
-					this.update(BigInteger.valueOf(Long.parseLong(splittedList.get(2))),
+					this.update(splittedList.get(2),
 							String.join(" ", splittedList.subList(3, splittedList.size())).getBytes());
 					break;
 				case "delete":
-					this.delete(BigInteger.valueOf(Long.parseLong(splittedList.get(2))));
+					this.delete(splittedList.get(2));
 					break;
 				}
 			}
