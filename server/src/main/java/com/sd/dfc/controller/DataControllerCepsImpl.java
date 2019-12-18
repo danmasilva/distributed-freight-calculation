@@ -80,7 +80,7 @@ public class DataControllerCepsImpl implements DataController {
 
 	@Override
 	public byte[] update(String[] splittedMessage) throws Exception {
-		int hashValue = chordController.hashData(Helper.toString(splittedMessage), Node.ring_size);
+		int hashValue = chordController.hashData(splittedMessage[2], Node.ring_size);
 		if (chordController.responsibleForData(hashValue, Node.localId, Node.hole_size)) {
 			List<String> splittedList = new ArrayList<>(Arrays.asList(splittedMessage));
 			

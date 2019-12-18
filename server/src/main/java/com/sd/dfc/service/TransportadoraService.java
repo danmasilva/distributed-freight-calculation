@@ -28,10 +28,10 @@ public class TransportadoraService extends transportadoraImplBase {
 		System.out.println("create transportadora request");
 
 		String nome = request.getTransportadora().getNome();
-		int idAbrangencia = request.getTransportadora().getIdAbrangencia();
+		String cepChave = request.getTransportadora().getCepChave();
 		double peso = request.getTransportadora().getPeso();
 
-		byte[] abrangencia = GRPCServer.cepDatabase.read(new BigInteger(String.valueOf(idAbrangencia)));
+		byte[] abrangencia = GRPCServer.cepDatabase.read(cepChave);
 
 		if (nome.length() == 0 || peso == 0.0 || abrangencia == null) {
 			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
@@ -44,10 +44,11 @@ public class TransportadoraService extends transportadoraImplBase {
 		String[] cepValues = new String(abrangencia).split(" ");
 
 		StringBuilder query = new StringBuilder();
-		query.append("create transportadora ").append(nome).append(" ").append(idAbrangencia).append(" ").append(peso);
+		query.append("create transportadora ").append(nome).append(" ").append(cepChave).append(" ").append(peso);
 
 		TransportadoraResponse.Builder transportadoraBuilder = TransportadoraResponse.newBuilder();
 		Cep.Builder abrangenciaBuilder = Cep.newBuilder();
+		abrangenciaBuilder.setChave(cepChave);
 		abrangenciaBuilder.setCepInicio(Long.parseLong(cepValues[0]));
 		abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
 
@@ -77,12 +78,12 @@ public class TransportadoraService extends transportadoraImplBase {
 
 		String id = request.getId();
 		String nome = request.getTransportadora().getNome();
-		int idAbrangencia = request.getTransportadora().getIdAbrangencia();
+		String cepChave = request.getTransportadora().getCepChave();
 		double peso = request.getTransportadora().getPeso();
 
-		byte[] abrangencia = GRPCServer.cepDatabase.read(new BigInteger(String.valueOf(idAbrangencia)));
+		byte[] abrangencia = GRPCServer.cepDatabase.read(cepChave);
 
-		if (nome.length() == 0 || idAbrangencia == 0 || peso == 0.0 || abrangencia == null) {
+		if (nome.length() == 0 || cepChave == null  || cepChave.isEmpty() || peso == 0.0 || abrangencia == null) {
 			APITransportadoraResponse.Builder response = APITransportadoraResponse.newBuilder();
 			response.setResponseCode(400).setResponsemessage("Bad Request");
 			responseObserver.onNext(response.build());
@@ -93,11 +94,12 @@ public class TransportadoraService extends transportadoraImplBase {
 		String[] cepValues = new String(abrangencia).split(" ");
 
 		StringBuilder query = new StringBuilder();
-		query.append("update transportadora ").append(id).append(" ").append(nome).append(" ").append(idAbrangencia)
+		query.append("update transportadora ").append(id).append(" ").append(nome).append(" ").append(cepChave)
 				.append(" ").append(peso);
 
 		TransportadoraResponse.Builder transportadoraBuilder = TransportadoraResponse.newBuilder();
 		Cep.Builder abrangenciaBuilder = Cep.newBuilder();
+		abrangenciaBuilder.setChave(cepChave);
 		abrangenciaBuilder.setCepInicio(Long.parseLong(cepValues[0]));
 		abrangenciaBuilder.setCepFim(Long.parseLong(cepValues[1]));
 

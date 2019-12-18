@@ -36,7 +36,7 @@ public class Database extends ArchiveManipulator implements Serializable {
 		return key;
 	}
 
-	public byte[] read(BigInteger id) {
+	public byte[] read(String id) {
 		return map.get(id);
 	}
 
@@ -44,8 +44,8 @@ public class Database extends ArchiveManipulator implements Serializable {
 		return map;
 	}
 
-	public byte[] update(String id, byte[] value) {
-		return map.put(id, value);
+	public byte[] update(String chave, byte[] value) {
+		return map.put(chave, value);
 	}
 
 	public byte[] delete(String id) {

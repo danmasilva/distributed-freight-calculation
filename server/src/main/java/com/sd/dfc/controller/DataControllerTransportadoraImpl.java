@@ -80,7 +80,7 @@ public class DataControllerTransportadoraImpl implements DataController {
 		for (Map.Entry<String, byte[]> entry : map.entrySet()) {
 			String[] transportadoraValues = new String(entry.getValue()).split(" ");
 			String[] cepValues = new String(
-					GRPCServer.cepDatabase.read(BigInteger.valueOf(Long.parseLong(transportadoraValues[1]))))
+					GRPCServer.cepDatabase.read(transportadoraValues[1]))
 							.split(" ");
 
 			Ceps ceps = new Ceps();

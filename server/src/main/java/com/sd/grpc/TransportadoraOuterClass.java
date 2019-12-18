@@ -19,12 +19,22 @@ public final class TransportadoraOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 cepInicio = 1;</code>
+     * <code>string chave = 1;</code>
+     */
+    java.lang.String getChave();
+    /**
+     * <code>string chave = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getChaveBytes();
+
+    /**
+     * <code>int64 cepInicio = 2;</code>
      */
     long getCepInicio();
 
     /**
-     * <code>int64 cepFim = 2;</code>
+     * <code>int64 cepFim = 3;</code>
      */
     long getCepFim();
   }
@@ -41,6 +51,7 @@ public final class TransportadoraOuterClass {
       super(builder);
     }
     private Cep() {
+      chave_ = "";
       cepInicio_ = 0L;
       cepFim_ = 0L;
     }
@@ -69,12 +80,18 @@ public final class TransportadoraOuterClass {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              chave_ = s;
+              break;
+            }
+            case 16: {
 
               cepInicio_ = input.readInt64();
               break;
             }
-            case 16: {
+            case 24: {
 
               cepFim_ = input.readInt64();
               break;
@@ -111,19 +128,53 @@ public final class TransportadoraOuterClass {
               com.sd.grpc.TransportadoraOuterClass.Cep.class, com.sd.grpc.TransportadoraOuterClass.Cep.Builder.class);
     }
 
-    public static final int CEPINICIO_FIELD_NUMBER = 1;
+    public static final int CHAVE_FIELD_NUMBER = 1;
+    private volatile java.lang.Object chave_;
+    /**
+     * <code>string chave = 1;</code>
+     */
+    public java.lang.String getChave() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chave_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chave = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChaveBytes() {
+      java.lang.Object ref = chave_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chave_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CEPINICIO_FIELD_NUMBER = 2;
     private long cepInicio_;
     /**
-     * <code>int64 cepInicio = 1;</code>
+     * <code>int64 cepInicio = 2;</code>
      */
     public long getCepInicio() {
       return cepInicio_;
     }
 
-    public static final int CEPFIM_FIELD_NUMBER = 2;
+    public static final int CEPFIM_FIELD_NUMBER = 3;
     private long cepFim_;
     /**
-     * <code>int64 cepFim = 2;</code>
+     * <code>int64 cepFim = 3;</code>
      */
     public long getCepFim() {
       return cepFim_;
@@ -143,11 +194,14 @@ public final class TransportadoraOuterClass {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (!getChaveBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, chave_);
+      }
       if (cepInicio_ != 0L) {
-        output.writeInt64(1, cepInicio_);
+        output.writeInt64(2, cepInicio_);
       }
       if (cepFim_ != 0L) {
-        output.writeInt64(2, cepFim_);
+        output.writeInt64(3, cepFim_);
       }
       unknownFields.writeTo(output);
     }
@@ -158,13 +212,16 @@ public final class TransportadoraOuterClass {
       if (size != -1) return size;
 
       size = 0;
+      if (!getChaveBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, chave_);
+      }
       if (cepInicio_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, cepInicio_);
+          .computeInt64Size(2, cepInicio_);
       }
       if (cepFim_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, cepFim_);
+          .computeInt64Size(3, cepFim_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -182,6 +239,8 @@ public final class TransportadoraOuterClass {
       com.sd.grpc.TransportadoraOuterClass.Cep other = (com.sd.grpc.TransportadoraOuterClass.Cep) obj;
 
       boolean result = true;
+      result = result && getChave()
+          .equals(other.getChave());
       result = result && (getCepInicio()
           == other.getCepInicio());
       result = result && (getCepFim()
@@ -197,6 +256,8 @@ public final class TransportadoraOuterClass {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CHAVE_FIELD_NUMBER;
+      hash = (53 * hash) + getChave().hashCode();
       hash = (37 * hash) + CEPINICIO_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCepInicio());
@@ -336,6 +397,8 @@ public final class TransportadoraOuterClass {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        chave_ = "";
+
         cepInicio_ = 0L;
 
         cepFim_ = 0L;
@@ -366,6 +429,7 @@ public final class TransportadoraOuterClass {
       @java.lang.Override
       public com.sd.grpc.TransportadoraOuterClass.Cep buildPartial() {
         com.sd.grpc.TransportadoraOuterClass.Cep result = new com.sd.grpc.TransportadoraOuterClass.Cep(this);
+        result.chave_ = chave_;
         result.cepInicio_ = cepInicio_;
         result.cepFim_ = cepFim_;
         onBuilt();
@@ -416,6 +480,10 @@ public final class TransportadoraOuterClass {
 
       public Builder mergeFrom(com.sd.grpc.TransportadoraOuterClass.Cep other) {
         if (other == com.sd.grpc.TransportadoraOuterClass.Cep.getDefaultInstance()) return this;
+        if (!other.getChave().isEmpty()) {
+          chave_ = other.chave_;
+          onChanged();
+        }
         if (other.getCepInicio() != 0L) {
           setCepInicio(other.getCepInicio());
         }
@@ -451,15 +519,84 @@ public final class TransportadoraOuterClass {
         return this;
       }
 
+      private java.lang.Object chave_ = "";
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public java.lang.String getChave() {
+        java.lang.Object ref = chave_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chave_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChaveBytes() {
+        java.lang.Object ref = chave_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chave_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChave(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        chave_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder clearChave() {
+        
+        chave_ = getDefaultInstance().getChave();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chave = 1;</code>
+       */
+      public Builder setChaveBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        chave_ = value;
+        onChanged();
+        return this;
+      }
+
       private long cepInicio_ ;
       /**
-       * <code>int64 cepInicio = 1;</code>
+       * <code>int64 cepInicio = 2;</code>
        */
       public long getCepInicio() {
         return cepInicio_;
       }
       /**
-       * <code>int64 cepInicio = 1;</code>
+       * <code>int64 cepInicio = 2;</code>
        */
       public Builder setCepInicio(long value) {
         
@@ -468,7 +605,7 @@ public final class TransportadoraOuterClass {
         return this;
       }
       /**
-       * <code>int64 cepInicio = 1;</code>
+       * <code>int64 cepInicio = 2;</code>
        */
       public Builder clearCepInicio() {
         
@@ -479,13 +616,13 @@ public final class TransportadoraOuterClass {
 
       private long cepFim_ ;
       /**
-       * <code>int64 cepFim = 2;</code>
+       * <code>int64 cepFim = 3;</code>
        */
       public long getCepFim() {
         return cepFim_;
       }
       /**
-       * <code>int64 cepFim = 2;</code>
+       * <code>int64 cepFim = 3;</code>
        */
       public Builder setCepFim(long value) {
         
@@ -494,7 +631,7 @@ public final class TransportadoraOuterClass {
         return this;
       }
       /**
-       * <code>int64 cepFim = 2;</code>
+       * <code>int64 cepFim = 3;</code>
        */
       public Builder clearCepFim() {
         
@@ -570,9 +707,14 @@ public final class TransportadoraOuterClass {
         getNomeBytes();
 
     /**
-     * <code>int32 idAbrangencia = 2;</code>
+     * <code>string cepChave = 2;</code>
      */
-    int getIdAbrangencia();
+    java.lang.String getCepChave();
+    /**
+     * <code>string cepChave = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getCepChaveBytes();
 
     /**
      * <code>double peso = 3;</code>
@@ -593,7 +735,7 @@ public final class TransportadoraOuterClass {
     }
     private Transportadora() {
       nome_ = "";
-      idAbrangencia_ = 0;
+      cepChave_ = "";
       peso_ = 0D;
     }
 
@@ -627,9 +769,10 @@ public final class TransportadoraOuterClass {
               nome_ = s;
               break;
             }
-            case 16: {
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              idAbrangencia_ = input.readInt32();
+              cepChave_ = s;
               break;
             }
             case 25: {
@@ -703,13 +846,38 @@ public final class TransportadoraOuterClass {
       }
     }
 
-    public static final int IDABRANGENCIA_FIELD_NUMBER = 2;
-    private int idAbrangencia_;
+    public static final int CEPCHAVE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object cepChave_;
     /**
-     * <code>int32 idAbrangencia = 2;</code>
+     * <code>string cepChave = 2;</code>
      */
-    public int getIdAbrangencia() {
-      return idAbrangencia_;
+    public java.lang.String getCepChave() {
+      java.lang.Object ref = cepChave_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        cepChave_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string cepChave = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCepChaveBytes() {
+      java.lang.Object ref = cepChave_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        cepChave_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int PESO_FIELD_NUMBER = 3;
@@ -738,8 +906,8 @@ public final class TransportadoraOuterClass {
       if (!getNomeBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, nome_);
       }
-      if (idAbrangencia_ != 0) {
-        output.writeInt32(2, idAbrangencia_);
+      if (!getCepChaveBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, cepChave_);
       }
       if (peso_ != 0D) {
         output.writeDouble(3, peso_);
@@ -756,9 +924,8 @@ public final class TransportadoraOuterClass {
       if (!getNomeBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, nome_);
       }
-      if (idAbrangencia_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, idAbrangencia_);
+      if (!getCepChaveBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, cepChave_);
       }
       if (peso_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
@@ -782,8 +949,8 @@ public final class TransportadoraOuterClass {
       boolean result = true;
       result = result && getNome()
           .equals(other.getNome());
-      result = result && (getIdAbrangencia()
-          == other.getIdAbrangencia());
+      result = result && getCepChave()
+          .equals(other.getCepChave());
       result = result && (
           java.lang.Double.doubleToLongBits(getPeso())
           == java.lang.Double.doubleToLongBits(
@@ -801,8 +968,8 @@ public final class TransportadoraOuterClass {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + NOME_FIELD_NUMBER;
       hash = (53 * hash) + getNome().hashCode();
-      hash = (37 * hash) + IDABRANGENCIA_FIELD_NUMBER;
-      hash = (53 * hash) + getIdAbrangencia();
+      hash = (37 * hash) + CEPCHAVE_FIELD_NUMBER;
+      hash = (53 * hash) + getCepChave().hashCode();
       hash = (37 * hash) + PESO_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getPeso()));
@@ -941,7 +1108,7 @@ public final class TransportadoraOuterClass {
         super.clear();
         nome_ = "";
 
-        idAbrangencia_ = 0;
+        cepChave_ = "";
 
         peso_ = 0D;
 
@@ -972,7 +1139,7 @@ public final class TransportadoraOuterClass {
       public com.sd.grpc.TransportadoraOuterClass.Transportadora buildPartial() {
         com.sd.grpc.TransportadoraOuterClass.Transportadora result = new com.sd.grpc.TransportadoraOuterClass.Transportadora(this);
         result.nome_ = nome_;
-        result.idAbrangencia_ = idAbrangencia_;
+        result.cepChave_ = cepChave_;
         result.peso_ = peso_;
         onBuilt();
         return result;
@@ -1026,8 +1193,9 @@ public final class TransportadoraOuterClass {
           nome_ = other.nome_;
           onChanged();
         }
-        if (other.getIdAbrangencia() != 0) {
-          setIdAbrangencia(other.getIdAbrangencia());
+        if (!other.getCepChave().isEmpty()) {
+          cepChave_ = other.cepChave_;
+          onChanged();
         }
         if (other.getPeso() != 0D) {
           setPeso(other.getPeso());
@@ -1130,28 +1298,71 @@ public final class TransportadoraOuterClass {
         return this;
       }
 
-      private int idAbrangencia_ ;
+      private java.lang.Object cepChave_ = "";
       /**
-       * <code>int32 idAbrangencia = 2;</code>
+       * <code>string cepChave = 2;</code>
        */
-      public int getIdAbrangencia() {
-        return idAbrangencia_;
+      public java.lang.String getCepChave() {
+        java.lang.Object ref = cepChave_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          cepChave_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 idAbrangencia = 2;</code>
+       * <code>string cepChave = 2;</code>
        */
-      public Builder setIdAbrangencia(int value) {
-        
-        idAbrangencia_ = value;
+      public com.google.protobuf.ByteString
+          getCepChaveBytes() {
+        java.lang.Object ref = cepChave_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          cepChave_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string cepChave = 2;</code>
+       */
+      public Builder setCepChave(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        cepChave_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 idAbrangencia = 2;</code>
+       * <code>string cepChave = 2;</code>
        */
-      public Builder clearIdAbrangencia() {
+      public Builder clearCepChave() {
         
-        idAbrangencia_ = 0;
+        cepChave_ = getDefaultInstance().getCepChave();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string cepChave = 2;</code>
+       */
+      public Builder setCepChaveBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        cepChave_ = value;
         onChanged();
         return this;
       }
@@ -5350,26 +5561,26 @@ public final class TransportadoraOuterClass {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024transportadora.proto\"(\n\003Cep\022\021\n\tcepInic" +
-      "io\030\001 \001(\003\022\016\n\006cepFim\030\002 \001(\003\"C\n\016Transportado" +
-      "ra\022\014\n\004nome\030\001 \001(\t\022\025\n\ridAbrangencia\030\002 \001(\005\022" +
-      "\014\n\004peso\030\003 \001(\001\"[\n\026TransportadoraResponse\022" +
-      "\n\n\002id\030\001 \001(\t\022\014\n\004nome\030\002 \001(\t\022\031\n\013abrangencia" +
-      "\030\003 \001(\0132\004.Cep\022\014\n\004peso\030\004 \001(\001\"8\n\rCreateRequ" +
-      "est\022\'\n\016transportadora\030\001 \001(\0132\017.Transporta" +
-      "dora\"D\n\rUpdateRequest\022\n\n\002id\030\001 \001(\t\022\'\n\016tra" +
-      "nsportadora\030\002 \001(\0132\017.Transportadora\"\033\n\rDe" +
-      "leteRequest\022\n\n\002id\030\001 \001(\t\"{\n\031APITransporta" +
-      "doraResponse\022\024\n\014responseCode\030\001 \001(\005\022\027\n\017re" +
-      "sponsemessage\030\002 \001(\t\022/\n\016transportadora\030\003 " +
-      "\001(\0132\027.TransportadoraResponse\"\007\n\005Empty2\340\001" +
-      "\n\016transportadora\0224\n\006create\022\016.CreateReque" +
-      "st\032\032.APITransportadoraResponse\0224\n\006update" +
-      "\022\016.UpdateRequest\032\032.APITransportadoraResp" +
-      "onse\0224\n\006delete\022\016.DeleteRequest\032\032.APITran" +
-      "sportadoraResponse\022,\n\007readall\022\006.Empty\032\027." +
-      "TransportadoraResponse0\001B\r\n\013com.sd.grpcb" +
-      "\006proto3"
+      "\n\024transportadora.proto\"7\n\003Cep\022\r\n\005chave\030\001" +
+      " \001(\t\022\021\n\tcepInicio\030\002 \001(\003\022\016\n\006cepFim\030\003 \001(\003\"" +
+      ">\n\016Transportadora\022\014\n\004nome\030\001 \001(\t\022\020\n\010cepCh" +
+      "ave\030\002 \001(\t\022\014\n\004peso\030\003 \001(\001\"[\n\026Transportador" +
+      "aResponse\022\n\n\002id\030\001 \001(\t\022\014\n\004nome\030\002 \001(\t\022\031\n\013a" +
+      "brangencia\030\003 \001(\0132\004.Cep\022\014\n\004peso\030\004 \001(\001\"8\n\r" +
+      "CreateRequest\022\'\n\016transportadora\030\001 \001(\0132\017." +
+      "Transportadora\"D\n\rUpdateRequest\022\n\n\002id\030\001 " +
+      "\001(\t\022\'\n\016transportadora\030\002 \001(\0132\017.Transporta" +
+      "dora\"\033\n\rDeleteRequest\022\n\n\002id\030\001 \001(\t\"{\n\031API" +
+      "TransportadoraResponse\022\024\n\014responseCode\030\001" +
+      " \001(\005\022\027\n\017responsemessage\030\002 \001(\t\022/\n\016transpo" +
+      "rtadora\030\003 \001(\0132\027.TransportadoraResponse\"\007" +
+      "\n\005Empty2\340\001\n\016transportadora\0224\n\006create\022\016.C" +
+      "reateRequest\032\032.APITransportadoraResponse" +
+      "\0224\n\006update\022\016.UpdateRequest\032\032.APITranspor" +
+      "tadoraResponse\0224\n\006delete\022\016.DeleteRequest" +
+      "\032\032.APITransportadoraResponse\022,\n\007readall\022" +
+      "\006.Empty\032\027.TransportadoraResponse0\001B\r\n\013co" +
+      "m.sd.grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5388,13 +5599,13 @@ public final class TransportadoraOuterClass {
     internal_static_Cep_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Cep_descriptor,
-        new java.lang.String[] { "CepInicio", "CepFim", });
+        new java.lang.String[] { "Chave", "CepInicio", "CepFim", });
     internal_static_Transportadora_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Transportadora_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Transportadora_descriptor,
-        new java.lang.String[] { "Nome", "IdAbrangencia", "Peso", });
+        new java.lang.String[] { "Nome", "CepChave", "Peso", });
     internal_static_TransportadoraResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_TransportadoraResponse_fieldAccessorTable = new

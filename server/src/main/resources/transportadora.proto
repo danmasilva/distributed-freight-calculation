@@ -10,13 +10,14 @@ service transportadora {
 }
 
 message Cep{
-	int64 cepInicio = 1;
-	int64 cepFim = 2;
+	string chave = 1;
+	int64 cepInicio = 2;
+	int64 cepFim = 3;
 }
 
 message Transportadora{
 	string nome = 1;
-	int32 idAbrangencia = 2;
+	string cepChave = 2;
 	double peso = 3;
 }
 
